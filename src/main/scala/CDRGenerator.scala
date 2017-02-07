@@ -18,7 +18,7 @@ object CDRGenerator {
       session.execute("INSERT INTO database.cdr(key, value) VALUES ('key1', 1);")
       session.execute("INSERT INTO database.cdr(key, value) VALUES ('key2', 2);")
     }
-    
+
     sc.stop()
   }
 }
