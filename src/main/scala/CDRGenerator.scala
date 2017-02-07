@@ -20,6 +20,8 @@ object CDRGenerator {
     }
     //should print 2
     println(rdd.count())
+
+    sc.stop()
   }
 }
 
