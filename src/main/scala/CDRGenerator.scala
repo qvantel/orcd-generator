@@ -12,37 +12,39 @@ object CDRGenerator {
       .set("spark.cassandra.connection.host", "127.0.0.1")
       .set("spark.cassandra.auth.username", "cassandra")
       .set("spark.cassandra.auth.password", "cassandra")
-    val sc = new SparkContext("local[2]", "database", conf)
+    val context = new SparkContext("local[2]", "database", conf)
 
-    // Select cassandra table
-    val rdd = sc.cassandraTable("database", "cdr")
+    // Setup cassandra connection
+    val connector = CassandraConnector(conf)
+    val session = connector.openSession()
 
-    // Setup cassandra table
-    CassandraConnector(conf).withSessionDo{ session =>
-      session.execute("CREATE KEYSPACE IF NOT EXISTS database WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1 };")
-      //session.execute("DROP TABLE IF EXISTS database.cdr;")
-      session.execute("CREATE TABLE IF NOT EXISTS database.cdr(key text PRIMARY KEY, value int, ts timestamp);")
-    }
+    // Setup database
+    session.execute("CREATE KEYSPACE IF NOT EXISTS database WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1 };")
+    // Optionally drop table
+    //session.execute("DROP TABLE IF EXISTS database.cdr;")
+    // Create table
+    session.execute("CREATE TABLE IF NOT EXISTS database.cdr(key text PRIMARY KEY, value int, ts timestamp);")
 
     // Insert random CDR data
     val rand = new Random()
     while (true){
+      // Sleeps for random amount of time (0-2sec)
       Thread.sleep(Math.abs(rand.nextLong()%2000))
 
+      // Key label key0-key10
       val keynum = Math.abs(rand.nextInt()%11)
       val key = s"key$keynum"
       val ts = LocalDateTime.now()
       val value = rand.nextInt()
 
-      CassandraConnector(conf).withSessionDo { session =>
-        session.execute(s"INSERT INTO database.cdr(key, value, ts) VALUES ('$key', $value, '$ts');")
-      }
+      // Insert data
+      session.execute(s"INSERT INTO database.cdr(key, value, ts) VALUES ('$key', $value, '$ts');")
 
       println(s"Inserted $key,$value,$ts")
     }
 
-    sc.stop()
+    // Close connection
+    session.close()
+    context.stop()
   }
 }
-
-
