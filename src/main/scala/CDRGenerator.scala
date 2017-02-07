@@ -8,6 +8,9 @@ import com.typesafe.scalalogging.Logger
 object CDRGenerator {
 
   def main(args: Array[String]): Unit = {
+    // Set up logging
+    val logger = Logger("CDRGenerator")
+
     // Configure spark->cassandra connection
     val conf = new SparkConf(true)
       .set("spark.cassandra.connection.host", "127.0.0.1")
@@ -42,7 +45,7 @@ object CDRGenerator {
       // Insert data
       session.execute(s"INSERT INTO database.cdr(key, value, ts) VALUES ('$key', $value, '$ts');")
 
-      println(s"Inserted $key,$value,$ts")
+      logger.info(s"Inserted $key,$value,$ts")
     }
 
     // Close cassandra session
