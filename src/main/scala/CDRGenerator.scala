@@ -18,8 +18,6 @@ object CDRGenerator {
       session.execute("INSERT INTO database.cdr(key, value) VALUES ('key1', 1);")
       session.execute("INSERT INTO database.cdr(key, value) VALUES ('key2', 2);")
     }
-    //should print 2
-    println(rdd.count())
 
     sc.stop()
   }
