@@ -7,7 +7,7 @@ import com.datastax.spark.connector.cql.CassandraConnector
 import com.typesafe.scalalogging.Logger
 import org.joda.time.{DateTime, DateTimeZone}
 
-object CDRGenerator extends App{
+object CDRGenerator extends App {
 
   // Set up logging
   val logger = Logger("CDRGenerator")
