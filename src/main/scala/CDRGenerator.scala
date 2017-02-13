@@ -1,8 +1,11 @@
 import java.time.LocalDateTime
 import java.util.Random
+
+import com.datastax.driver.core.{BatchStatement, BoundStatement, PreparedStatement, SimpleStatement}
 import org.apache.spark._
 import com.datastax.spark.connector.cql.CassandraConnector
 import com.typesafe.scalalogging.Logger
+import org.joda.time.{DateTime, DateTimeZone}
 
 object CDRGenerator extends App{
 
@@ -26,17 +29,28 @@ object CDRGenerator extends App{
   // Drop table (In case table columns change, when CDR spec is fixed we can remove this)
   session.execute("DROP TABLE IF EXISTS database.cdr;")
   // Create table
-  session.execute("CREATE TABLE IF NOT EXISTS database.cdr(key uuid PRIMARY KEY, value int, ts timestamp);")
+  session.execute("CREATE TABLE IF NOT EXISTS database.cdr(key uuid PRIMARY KEY, value int, ts timestamp)")
 
+  // Prepare batch
+  val ps = session.prepare("INSERT INTO database.cdr (key, value, ts) VALUES (?,?,?)")
+  val batch = new BatchStatement()
+  var count = 1
   // Insert random CDR data
   val rand = new Random()
   while(true) {
-    val ts = LocalDateTime.now()
-    val value = rand.nextInt()
-    Thread.sleep(Math.abs(rand.nextLong() % 5))
+    val ts = DateTime.now(DateTimeZone.UTC)
+    val value = rand.nextInt()%10
+    Thread.sleep(Math.abs(rand.nextLong() % 3))
+
     // Insert data
-    session.execute(s"INSERT INTO database.cdr(key, value, ts) VALUES (uuid(), $value, '$ts');")
-    //logger.info(s"Inserted $value,$ts")
+    batch.add(new SimpleStatement(s"INSERT INTO database.cdr (key, value, ts) VALUES (uuid(), $value, '$ts')"))
+    if(count==1000){
+      session.execute(batch)
+      batch.clear()
+      logger.info("Batch sent")
+      count = 0
+    }
+    count = count + 1
   }
 
   // Close cassandra session
