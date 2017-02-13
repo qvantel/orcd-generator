@@ -1,7 +1,7 @@
 import java.time.LocalDateTime
 import java.util.Random
 
-import com.datastax.driver.core.{BatchStatement, BoundStatement, PreparedStatement, SimpleStatement}
+import com.datastax.driver.core.{BatchStatement, SimpleStatement}
 import org.apache.spark._
 import com.datastax.spark.connector.cql.CassandraConnector
 import com.typesafe.scalalogging.Logger
