@@ -1,5 +1,5 @@
 #
-#  REST Backend Alpine Docker Container
+#  CDRGenerator Alpine Docker Container
 #
 
 FROM alpine:3.4
@@ -27,5 +27,6 @@ RUN set -x \
 
 EXPOSE 8080
 
+# Copy and run CDRGenerator.jar
 COPY target/scala-2.11/CDRGenerator.jar /home/CDRGenerator.jar
 CMD ["java","-jar","/home/CDRGenerator.jar"]
