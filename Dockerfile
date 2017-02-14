@@ -25,8 +25,6 @@ RUN set -x \
 		openjdk8-jre="$JAVA_ALPINE_VERSION" \
 	&& [ "$JAVA_HOME" = "$(docker-java-home)" ]
 
-EXPOSE 8080
-
 # Copy and run CDRGenerator.jar
 COPY target/scala-2.11/CDRGenerator.jar /home/CDRGenerator.jar
 CMD ["java","-jar","/home/CDRGenerator.jar"]
