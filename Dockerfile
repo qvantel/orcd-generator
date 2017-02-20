@@ -20,6 +20,10 @@ ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openj
 ENV JAVA_VERSION 8u111
 ENV JAVA_ALPINE_VERSION 8.111.14-r0
 
+# Add bash
+RUN apk update
+RUN apk add bash
+
 RUN set -x \
 	&& apk add --no-cache \
 		openjdk8-jre="$JAVA_ALPINE_VERSION" \
