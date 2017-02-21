@@ -1,5 +1,3 @@
-import java.time.LocalDateTime
-import java.util.Random
 
 import com.datastax.driver.core.{BatchStatement, SimpleStatement}
 import org.apache.spark._
@@ -7,6 +5,8 @@ import com.datastax.spark.connector.cql.CassandraConnector
 import com.typesafe.scalalogging.Logger
 import model.{EventType, Service, TrafficCase, UnitOfMeasure}
 import org.joda.time.{DateTime, DateTimeZone}
+
+import scala.util.Random
 
 object CDRGenerator extends App {
 
@@ -30,12 +30,11 @@ object CDRGenerator extends App {
   var count = 1
 
   // Insert random CDR data
-  val rand = new Random()
   while(true) {
 
     // Generate random data
     val timestamp = DateTime.now(DateTimeZone.UTC)
-    val value = rand.nextInt(Integer.MAX_VALUE)%1000
+    val value = Random.nextInt(Integer.MAX_VALUE)%1000
     val unit_of_measure = UnitOfMeasure(scala.util.Random.nextInt(UnitOfMeasure.maxId))
     val service = Service(scala.util.Random.nextInt(Service.maxId))
     val traffic_case = TrafficCase(scala.util.Random.nextInt(TrafficCase.maxId))
@@ -61,11 +60,11 @@ object CDRGenerator extends App {
     val ed = ""
 
     val rint = 999
-    val a_party_number = Iterator.continually("447700900" + f"${rand.nextInt(rint)}%03d")
-    val b_party_number = Iterator.continually("447700900" + f"${rand.nextInt(rint)}%03d")
+    val a_party_number = Iterator.continually("447700900" + f"${Random.nextInt(rint)}%03d")
+    val b_party_number = Iterator.continually("447700900" + f"${Random.nextInt(rint)}%03d")
 
     // Sleep for slowing down data transfer and more realistic timestamp intervall
-    Thread.sleep(Math.abs(rand.nextLong() % 3))
+    Thread.sleep(Math.abs(Random.nextLong() % 3))
 
     // Insert call data
     batch.add(new SimpleStatement(s"INSERT INTO qvantel.call (id, created_at, started_at, used_service_units, service, event_details, event_charges)" +

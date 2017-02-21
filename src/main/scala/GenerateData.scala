@@ -1,14 +1,13 @@
-import java.util.Random
 
 import utils.property.{CallConfig, DataConfig}
+import scala.util.Random
 
-object GenerateData extends CallConfig with DataConfig{
+object GenerateData extends CallConfig with DataConfig {
 
   val mccList = getAvailableMccCodes()
 
   private def mcc(): String = {
-    val rnd:Random = new Random()
-    val int = rnd.nextInt(mccList.length - 0) + 0
+    val int = Random.nextInt(mccList.length - 0) + 0
     this.mccList(int).toString
   }
 
@@ -26,28 +25,23 @@ object GenerateData extends CallConfig with DataConfig{
   }
 
   def msisdn(): String = {
-    val rnd:Random = new Random()
-    var ret = ""
+    val randomStr = (1 to 10)
+      .map(_ => Random.nextInt(10))
+      .mkString
 
-    for(a<-1 to 10)
-      ret=ret + (rnd.nextInt(9 - 0) + 0).toString
-
-    ret
+    randomStr
   }
 
   def isRoaming(): Boolean = {
     val PERCENTAGE_MAX = 100
-    val rnd:Random = new Random()
 
-    val dice = rnd.nextInt(PERCENTAGE_MAX-roamingChance)-roamingChance
+    val dice = Random.nextInt(PERCENTAGE_MAX-roamingChance)-roamingChance
     val k = if (dice>=roamingChance) true else false
     k
   }
 
   def product(): String = {
-    val rnd:Random = new Random()
-
-    val int = rnd.nextInt(products.length-0)-0
+    val int = Random.nextInt(products.length-0)-0
     this.products(int)
   }
 }
