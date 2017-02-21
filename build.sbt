@@ -13,7 +13,9 @@ libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % "2.1.0" % "compile",
   "org.apache.spark" %% "spark-sql" % "2.1.0" % "compile",
   "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-M3",
-  "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0")
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
+  "com.typesafe" % "config" % "1.3.1",
+  "org.json4s" %% "json4s-native" % "3.5.0")
 
 // This part is required for spark to assemble
 // Why? I don't know, but it works
