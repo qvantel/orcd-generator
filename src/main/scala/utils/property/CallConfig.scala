@@ -12,7 +12,7 @@ import scala.util.{Failure, Success, Try}
 
 trait CallConfig extends ApplicationConfig {
   val countriesFile = config.getString("gen.countries.file")
-  val roamingChance = config.getString("gen.roaming.change").toString.toInt
+  val roamingChance = config.getString("gen.roaming.change").toString.toDouble
 
   /**
     * Tries to open a JSON-file in the classpath with the name as described "countriesFile"
@@ -44,7 +44,10 @@ trait CallConfig extends ApplicationConfig {
 
     t match {
       case Success(s) => Success(s).value
-      case Failure(e) => List()
+      case Failure(e) => {
+        e.printStackTrace()
+        List()
+      }
     }
   }
 

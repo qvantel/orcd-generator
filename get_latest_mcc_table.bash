@@ -13,4 +13,3 @@ j=$(sha1sum mcc-mnc-table.json 2>/dev/null | awk '{print $1;}')
 
 # replace if different
 [ t != j ] && mv temp.json mcc-mnc-table.json || rm temp.json
-cp mcc-mnc-table.json src/main/resources/mcc-mnc-table.json
