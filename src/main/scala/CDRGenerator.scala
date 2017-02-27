@@ -63,7 +63,7 @@ object CDRGenerator extends App {
       s"{amount:$value, unit_of_measure:'$unit_of_measure', currency: '$currency'}, " + // used_service_units
       s"'$service'," + // service
       s"{access_point_name: '$apname', a_party_number: '$a_party_number', " + //event_details
-      s"is_roaming: $is_roaming, user_location: {" + // event_details
+      s"is_roaming: $is_roaming, a_party_location: {" + // event_details
       s"destination: '$udestination', location_number: '$ulocation_number', " + //a_party_location
       s"location_area_identification: '$ulocation_area_identification', " +
       s"cell_global_identification: '$ucell_global_identification'}}, " +
