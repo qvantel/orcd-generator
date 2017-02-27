@@ -6,7 +6,7 @@ class ApplicationConfigTest extends FunSuite with Config {
 
   test("Check that config file is present") {
     val res = config.getString("gen.threaded")
-    val contains = if (res.equals("yes") || res.equals("no")) true else false
+    val contains = res.equals("yes") || res.equals("no")
     assert(contains)
   }
 
