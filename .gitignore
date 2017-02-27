@@ -12,6 +12,9 @@ src_managed/
 project/boot/
 project/plugins/project/
 
+# 10k lines file ignore
+mcc-mnc-table.json
+
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
