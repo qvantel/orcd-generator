@@ -6,5 +6,4 @@ trait ApplicationConfig extends Config {
 
   // Get the batch size to use as a limit
   val batchSize = config.getInt("gen.cassandra.element.batch.size")
-
 }

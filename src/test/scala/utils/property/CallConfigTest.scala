@@ -1,14 +1,12 @@
 package utils.property
 
-import com.typesafe.config.ConfigFactory
 import org.scalatest.FunSuite
 
-class CallConfigTest extends FunSuite {
+class CallConfigTest extends FunSuite with Config {
 
   test("Check that there is a mcc-resources file") {
     try {
-      val conf = ConfigFactory.load()
-      val res = conf.getString("gen.countries.file")
+      val res = config.getString("gen.countries.file")
 
       val source = scala.io.Source.fromFile(res)
       val contents = source.mkString

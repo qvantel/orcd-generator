@@ -1,10 +1,7 @@
 package utils.property
 
-import org.apache.commons.io.FileUtils
 import org.json4s.DefaultFormats
-import org.json4s.JsonAST.{JObject, JValue}
 import org.json4s._
-import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
 import model.Country
 
