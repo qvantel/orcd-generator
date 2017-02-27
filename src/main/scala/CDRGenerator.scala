@@ -24,7 +24,8 @@ object CDRGenerator extends App {
   val session = connector.openSession()
 
   // Prepare batch
-  val ps = session.prepare("INSERT INTO qvantel.call (id, created_at, started_at, used_service_units, service, event_details, event_charges) VALUES (?,?,?,?,?,?,?)")
+  val ps = session.prepare("INSERT INTO qvantel.call (id, created_at, started_at," +
+    "used_service_units, service, event_details, event_charges) VALUES (?,?,?,?,?,?,?)")
   val batchCall = new BatchStatement()
   val batchProduct = new BatchStatement()
   var count = 1
