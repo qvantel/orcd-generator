@@ -7,6 +7,16 @@ scalaVersion := "2.11.8"
 assemblyJarName in assembly := "CDRGenerator.jar"
 mainClass in assembly := Some("CDRGenerator")
 
+lazy val execScript = taskKey[Unit]("Download mcc library")
+
+execScript := {
+  import sys.process._
+  Seq("./get_latest_mcc_table.bash") !
+}
+
+compile in Compile <<= (compile in Compile).dependsOn(execScript)
+
+
 resolvers += "Spark Packages Repo" at "https://dl.bintray.com/spark-packages/maven"
 
 libraryDependencies ++= Seq(
