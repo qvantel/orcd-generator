@@ -1,9 +1,8 @@
 package se.qvantel.generator.utils.property
 
-import java.io.{BufferedReader, InputStream, InputStreamReader}
+import java.io.InputStream
 
 import org.scalatest.FunSuite
-import se.qvantel.generator.utils.property.Config
 
 class CallConfigTest extends FunSuite with Config {
 
@@ -22,8 +21,7 @@ class CallConfigTest extends FunSuite with Config {
     }
     catch {
       case ex: Exception => {
-        ex.printStackTrace()
-        fail("")
+        fail(ex.getMessage())
       }
     }
   }
