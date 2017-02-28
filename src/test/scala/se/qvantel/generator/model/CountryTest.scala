@@ -4,13 +4,10 @@ import org.json4s.DefaultFormats
 import org.scalatest.FunSuite
 import org.json4s.native.JsonMethods._
 
-/**
-  * Created by student on 2/28/17.
-  */
 class CountryTest extends FunSuite {
 
   test("Test parsing of JSON-string to model.Country case class") {
-    val string="[" +
+    val string = "[" +
       "{\"network\":\"A-Mobile\",\"country\":\"Abkhazia\",\"mcc\":\"289\",\"iso\":\"ge\"," +
       "\"country_code\":\"7\",\"mnc\":\"68\"}," +
       "{\"network\":\"A-Mobile\",\"country\":\"Abkhazia\"," +

@@ -15,18 +15,12 @@ object GenerateData extends CallConfig with DataConfig {
     this.mccList(int).toString
   }
 
-  private def mnc(): String = {
-    "000"
-  }
+  private def mnc(): String = "000"
 
-  private def cell(): String = {
-    "FFFFFFFF"
-  }
+  private def cell(): String = "FFFFFFFF"
 
-  def destination(): String = {
-    // MCC + MNC + Whatever
-    mcc() + mnc() + cell()
-  }
+
+  def destination(): String = mcc() + mnc() + cell()
 
   def msisdn(): String = {
     val ten = 10
@@ -37,9 +31,7 @@ object GenerateData extends CallConfig with DataConfig {
     randomStr
   }
 
-  def isRoaming(): Boolean = {
-   math.random < roamingChance
-  }
+  def isRoaming(): Boolean = math.random < roamingChance
 
   def product(): String = {
     val int = Random.nextInt(products.length-0)-0

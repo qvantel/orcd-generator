@@ -12,7 +12,7 @@ trait Call extends EDR {
     val bpn_location_area_identification = ""
     val bpn_cell_global_identification = ""
 
-  def generateBatch(): String ={
+  def generateBatch(): String = {
     // Insert call data
     val str = s"INSERT INTO qvantel.call (id, created_at, started_at, used_service_units, service, event_details, event_charges)" +
       s"VALUES (uuid(), '$timestamp', '$timestamp', " + // id, created_at and started_at

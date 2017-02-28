@@ -41,7 +41,7 @@ object CDRGenerator extends App {
     // Sleep for slowing down data transfer and more realistic timestamp intervall
     Thread.sleep(Math.abs(Random.nextLong()%3))
 
-    if(count==maxBatch){
+    if (count==maxBatch) {
       session.execute(batchProduct)
       batchProduct.clear()
       logger.info("Product batch sent")

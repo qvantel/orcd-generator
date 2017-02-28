@@ -2,14 +2,14 @@ package se.qvantel.generator.model
 
 import se.qvantel.generator.GenerateData
 
-trait Product extends EDR{
+trait Product extends EDR {
   val traffic_case = TrafficCase(scala.util.Random.nextInt(TrafficCase.maxId))
   val event_type = EventType(scala.util.Random.nextInt(EventType.maxId))
   val apname = ""
   val ucell_global_identification = ""
 
   // Insert random CDR data
-  def generateBatch(): String ={
+  def generateBatch(): String = {
     // Insert product data
     val str = s"INSERT INTO qvantel.product (id, created_at, started_at, used_service_units, service, event_details, event_charges)" +
       s"VALUES (uuid(), '$timestamp', '$timestamp', " + // id, created_at and started_at
