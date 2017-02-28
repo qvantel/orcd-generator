@@ -1,4 +1,4 @@
-package model
+package se.qvantel.generator.model
 
 object UnitOfMeasure extends Enumeration {
   type UnitOfMeasure = Value

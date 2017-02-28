@@ -1,4 +1,4 @@
-package utils.property
+package se.qvantel.generator.utils.property
 
 import com.typesafe.config.ConfigFactory
 

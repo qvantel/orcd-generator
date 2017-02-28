@@ -1,11 +1,11 @@
-package utils.property
+package se.qvantel.generator.utils.property
 
 import java.io.{BufferedReader, InputStream, InputStreamReader}
 
 import org.json4s.DefaultFormats
 import org.json4s._
 import org.json4s.native.JsonMethods._
-import model.Country
+import se.qvantel.generator.model.Country
 import org.apache.spark.metrics.source
 
 import scala.util.{Failure, Success, Try}

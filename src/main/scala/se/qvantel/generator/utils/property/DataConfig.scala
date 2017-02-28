@@ -1,4 +1,4 @@
-package utils.property
+package se.qvantel.generator.utils.property
 
 /**
   *  Data(products) specific configuration

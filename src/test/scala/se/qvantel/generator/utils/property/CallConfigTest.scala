@@ -1,8 +1,9 @@
-package utils.property
+package se.qvantel.generator.utils.property
 
 import java.io.{BufferedReader, InputStream, InputStreamReader}
 
 import org.scalatest.FunSuite
+import se.qvantel.generator.utils.property.Config
 
 class CallConfigTest extends FunSuite with Config {
 

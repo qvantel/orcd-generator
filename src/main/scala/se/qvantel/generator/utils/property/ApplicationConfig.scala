@@ -1,4 +1,4 @@
-package utils.property
+package se.qvantel.generator.utils.property
 
 trait ApplicationConfig extends Config {
   // If the application should use threads

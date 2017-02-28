@@ -1,4 +1,4 @@
-package model
+package se.qvantel.generator.model
 
 object Service extends Enumeration {
   type Service = Value

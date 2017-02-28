@@ -1,5 +1,9 @@
+package se.qvantel.generator
 
-import utils.property.{CallConfig, DataConfig}
+
+import se.qvantel.generator.utils.property.{CallConfig, DataConfig}
+import utils.property.CallConfig
+
 import scala.util.Random
 
 object GenerateData extends CallConfig with DataConfig {
