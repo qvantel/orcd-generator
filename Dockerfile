@@ -31,4 +31,4 @@ RUN set -x \
 
 # Copy and run CDRGenerator.jar
 COPY target/scala-2.11/CDRGenerator.jar /home/CDRGenerator.jar
-CMD ["java","-jar","/home/CDRGenerator.jar"]
+CMD ["java","-Dnetty.epoll.enabled=false","-jar","/home/CDRGenerator.jar"]

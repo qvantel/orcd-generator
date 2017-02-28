@@ -1,9 +1,12 @@
 package utils.property
 
+import java.io.{BufferedReader, InputStream, InputStreamReader}
+
 import org.json4s.DefaultFormats
 import org.json4s._
 import org.json4s.native.JsonMethods._
 import model.Country
+import org.apache.spark.metrics.source
 
 import scala.util.{Failure, Success, Try}
 
@@ -20,17 +23,19 @@ trait CallConfig extends ApplicationConfig {
   def getAvailableMccCodes(): List[Int] = {
     val t = Try {
       // Open a source file
-      val source = scala.io.Source.fromFile(countriesFile)
+      val res = config.getString("gen.countries.file")
+
+      val source : InputStream = getClass.getResourceAsStream(res)
+      val lines = scala.io.Source.fromInputStream( source ).mkString
 
       // Try to read mcc-table, using the Country-model
       // Read from the opened file
-      val lines = source.mkString
 
       // For json4s, specify parse format
       implicit val format = DefaultFormats
 
       // Parse the contents, extract to a list of countries
-      val countriesList = parse(lines).extract[List[Country]]
+      val countriesList = parse(lines.toString()).extract[List[Country]]
 
       // Close source file
       source.close()

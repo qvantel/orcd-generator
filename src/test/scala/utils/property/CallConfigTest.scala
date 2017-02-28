@@ -1,5 +1,7 @@
 package utils.property
 
+import java.io.{BufferedReader, InputStream, InputStreamReader}
+
 import org.scalatest.FunSuite
 
 class CallConfigTest extends FunSuite with Config {
@@ -8,13 +10,20 @@ class CallConfigTest extends FunSuite with Config {
     try {
       val res = config.getString("gen.countries.file")
 
-      val source = scala.io.Source.fromFile(res)
-      val contents = source.mkString
-      source.close()
-      assert(contents.length()>0)
+      val stream : InputStream = getClass.getResourceAsStream(res)
+      val lines = scala.io.Source.fromInputStream( stream ).mkString
+
+      // Try to read mcc-table, using the Country-model
+      // Read from the opened file
+
+      assert(lines.nonEmpty)
+      stream.close()
     }
     catch {
-      case ex: Exception => fail(ex.getMessage)
+      case ex: Exception => {
+        ex.printStackTrace()
+        fail("")
+      }
     }
   }
 
