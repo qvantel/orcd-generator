@@ -1,14 +1,11 @@
 package se.qvantel.generator.utils.property
 
-import java.io.{BufferedReader, InputStream, InputStreamReader}
-
+import java.io.InputStream
 import org.json4s.DefaultFormats
 import org.json4s._
 import org.json4s.native.JsonMethods._
 import se.qvantel.generator.model.Country
-import org.apache.spark.metrics.source
 
-import scala.util.{Failure, Success, Try}
 
 trait CallConfig extends ApplicationConfig {
   val countriesFile = config.getString("gen.countries.file")
@@ -21,7 +18,6 @@ trait CallConfig extends ApplicationConfig {
     * @return List[Int]
     */
   def getAvailableMccCodes(): List[Int] = {
-    val t = Try {
       // Open a source file
       val res = config.getString("gen.countries.file")
 
@@ -44,14 +40,6 @@ trait CallConfig extends ApplicationConfig {
       countriesList.map(c => c.mcc.toInt).distinct
     }
 
-    t match {
-      case Success(s) => Success(s).value
-      case Failure(e) => {
-        e.printStackTrace()
-        List()
-      }
-    }
   }
 
-}
 
