@@ -8,6 +8,9 @@ trait ApplicationConfig extends Config {
   // Get the batch size to use as a limit
   val batchSize = config.getInt("gen.cassandra.element.batch.size")
 
-  //The limit of amount to generate(0-max)
+  // The limit of amount to generate(0-max)
   val amountMax = config.getInt("gen.cassandra.element.amount.max")
+
+  // The max amount of time the thread can sleep
+  val maxSleep = config.getInt("gen.thread.max.sleeptime")
 }

@@ -4,8 +4,6 @@ import com.datastax.driver.core.{BatchStatement, SimpleStatement}
 import com.typesafe.scalalogging.Logger
 import se.qvantel.generator.model.{Call, Product}
 
-import scala.util.Random
-
 object CDRGenerator extends App with SparkConnection {
 
   // Set up logging
@@ -25,7 +23,7 @@ object CDRGenerator extends App with SparkConnection {
     batchProduct.add(new SimpleStatement(Product.generateBatch()))
 
     // Sleep for slowing down data transfer and more realistic timestamp intervall
-    Thread.sleep(Math.abs(Random.nextLong()%3))
+    Thread.sleep(GenerateData.sleepTime())
 
     if (count == maxBatch) {
       session.execute(batchProduct)
