@@ -5,7 +5,7 @@ version := "1.0"
 scalaVersion := "2.11.8"
 
 assemblyJarName in assembly := "CDRGenerator.jar"
-mainClass in assembly := Some("CDRGenerator")
+mainClass in assembly := Some("se.qvantel.generator.CDRGenerator")
 
 lazy val execScript = taskKey[Unit]("Download mcc library")
 
