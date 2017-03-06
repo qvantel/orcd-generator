@@ -22,6 +22,6 @@ trait EDR {
   val cactype = ""
   val caetype = ""
   val cartype = ""
-  val end_balance = 0
+  def endBalance: Int = GenerateData.amount()
   val expiry_date = ""
 }
