@@ -4,9 +4,6 @@ import com.datastax.driver.core.{BatchStatement, SimpleStatement}
 import se.qvantel.generator.model.{Call, Product}
 import utils.Logger
 
-object CDRGenerator extends App with SparkConnection {
-
-
 object CDRGenerator extends App with SparkConnection with Logger {
   // Prepare batch
   val ps = session.prepare("INSERT INTO qvantel.call (id, created_at, started_at," +
