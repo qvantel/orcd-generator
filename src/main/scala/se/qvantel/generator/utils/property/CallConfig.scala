@@ -21,11 +21,11 @@ trait CallConfig extends ApplicationConfig {
       // Open a source file
       val res = config.getString("gen.countries.file")
 
+      // Open a resource from the res variable. We use a resource since it can be a jar-context.
       val source : InputStream = getClass.getResourceAsStream(res)
-      val lines = scala.io.Source.fromInputStream( source ).mkString
 
-      // Try to read mcc-table, using the Country-model
-      // Read from the opened file
+      // Finally, read the actuals contents into a string.
+      val lines = scala.io.Source.fromInputStream( source ).mkString
 
       // For json4s, specify parse format
       implicit val format = DefaultFormats
