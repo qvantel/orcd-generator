@@ -3,8 +3,8 @@ package se.qvantel.generator.model
 import se.qvantel.generator.GenerateData
 
 object Call extends EDR {
-  def trafficCase: String = TrafficCase(scala.util.Random.nextInt(TrafficCase.maxId)).toString
-  def eventType: String = EventType(scala.util.Random.nextInt(EventType.maxId)).toString
+  def trafficCase: String = GenerateData.trafficCase()
+  def eventType: String = GenerateData.eventType()
   def bPartyNumber: String = GenerateData.msisdn()
   def bpnDestination: String = GenerateData.destination()
   // move to method if it is non static

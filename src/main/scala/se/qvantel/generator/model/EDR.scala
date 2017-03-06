@@ -1,15 +1,13 @@
 package se.qvantel.generator.model
 
-import org.joda.time.{DateTime, DateTimeZone}
+import org.joda.time.DateTime
 import se.qvantel.generator.GenerateData
 
-import scala.util.Random
-
 trait EDR {
-  def timestamp: DateTime = DateTime.now(DateTimeZone.UTC)
-  def amount: Int = Random.nextInt(Integer.MAX_VALUE)%1000
-  def unitOfMeasure: String = UnitOfMeasure(scala.util.Random.nextInt(UnitOfMeasure.maxId)).toString
-  def service: String = Service(scala.util.Random.nextInt(Service.maxId)).toString
+  def timestamp: DateTime = GenerateData.timeStamp()
+  def amount: Int = GenerateData.amount()
+  def unitOfMeasure: String = GenerateData.unitOfMeasure()
+  def service: String = GenerateData.service()
   def isRoaming: Boolean = GenerateData.isRoaming()
   def aPartyNumber: String = GenerateData.msisdn()
   def apnDestination: String = GenerateData.destination()

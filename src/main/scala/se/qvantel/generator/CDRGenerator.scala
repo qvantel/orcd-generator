@@ -1,7 +1,8 @@
+package se.qvantel.generator
+
 import com.datastax.driver.core.{BatchStatement, SimpleStatement}
 import com.typesafe.scalalogging.Logger
 import se.qvantel.generator.model.{Call, Product}
-import se.qvantel.generator.{GenerateData, SparkConnection}
 
 import scala.util.Random
 

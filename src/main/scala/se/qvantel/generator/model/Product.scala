@@ -1,10 +1,12 @@
 package se.qvantel.generator.model
 
+import se.qvantel.generator.GenerateData
+
 
 object Product extends EDR {
   // Duplicated in Call but keep for the moment as we might need to split up traffic cases
-  def trafficCase: String = TrafficCase(scala.util.Random.nextInt(TrafficCase.maxId)).toString
-  def eventType: String = EventType(scala.util.Random.nextInt(EventType.maxId)).toString
+  def trafficCase: String = GenerateData.trafficCase()
+  def eventType: String = GenerateData.eventType()
   val apname = ""
   val ucell_global_identification = ""
 
