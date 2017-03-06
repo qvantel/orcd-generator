@@ -1,10 +1,7 @@
 package se.qvantel.generator.model
 
-import se.qvantel.generator.GenerateData
-
 
 object Product extends EDR {
-  // Duplicated in Call but keep for the moment as we might need to split up traffic cases
   val apname = ""
 
   // Insert random CDR data
