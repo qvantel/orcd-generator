@@ -2,13 +2,12 @@ package se.qvantel.generator.model
 
 import se.qvantel.generator.GenerateData
 
-
 object Product extends EDR {
   // Duplicated in Call but keep for the moment as we might need to split up traffic cases
   val apname = ""
 
   // Insert random CDR data
-  def generateBatch(): String = {
+  def generateRecord (): String = {
     // Insert product data
     val str = s"INSERT INTO qvantel.product (id, created_at, started_at, used_service_units, service, event_details, event_charges)" +
       s"VALUES (uuid(), '$timestamp', '$timestamp', " + // id, created_at and started_at

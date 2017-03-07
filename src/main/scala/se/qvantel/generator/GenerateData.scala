@@ -32,7 +32,7 @@ object GenerateData extends CallConfig with DataConfig {
     randomStr
   }
 
-  def sleepTime(): Long = Math.abs(Random.nextLong()%maxSleep)
+  def sleepTime(): Long = Math.abs(if(maxSleep>0)Random.nextLong()%maxSleep else 0)
 
   def amount(): Int = Random.nextInt(Integer.MAX_VALUE)%amountMax
 

@@ -6,28 +6,24 @@ import utils.Logger
 
 object CDRGenerator extends App with SparkConnection with Logger {
   // Prepare batch
-  val ps = session.prepare("INSERT INTO qvantel.call (id, created_at, started_at," +
-    "used_service_units, service, event_details, event_charges) VALUES (?,?,?,?,?,?,?)")
-  val batchCall = new BatchStatement()
   val batchProduct = new BatchStatement()
+  val batchCall = new BatchStatement()
   var count = 1
   val maxBatch = GenerateData.batchSize
 
   while (true) {
     // Generate random data
-    batchCall.add(new SimpleStatement(Call.generateBatch()))
-    batchProduct.add(new SimpleStatement(Product.generateBatch()))
+    batchCall.add(new SimpleStatement(Call.generateRecord()))
+    batchProduct.add(new SimpleStatement(Product.generateRecord()))
 
     // Sleep for slowing down data transfer and more realistic timestamp intervall
-    Thread.sleep(GenerateData.sleepTime())
+    if(GenerateData.sleepTime()>0) Thread.sleep(GenerateData.sleepTime())
 
     if (count == maxBatch) {
       session.execute(batchProduct)
       batchProduct.clear()
-      logger.info("Product batch sent")
       session.execute(batchCall)
       batchCall.clear()
-      logger.info("Call batch sent")
       count = 0
     }
     count = count + 1
