@@ -17,7 +17,7 @@ object CDRGenerator extends App with SparkConnection with Logger {
     batchProduct.add(new SimpleStatement(Product.generateRecord()))
 
     // Sleep for slowing down data transfer and more realistic timestamp intervall
-    if(GenerateData.sleepTime()>0) Thread.sleep(GenerateData.sleepTime())
+    if(GenerateData.sleepTime() > 0) Thread.sleep(GenerateData.sleepTime())
 
     if (count == maxBatch) {
       session.execute(batchProduct)
