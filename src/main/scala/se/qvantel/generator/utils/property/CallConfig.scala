@@ -6,10 +6,9 @@ import org.json4s._
 import org.json4s.native.JsonMethods._
 import se.qvantel.generator.model.Country
 
-
 trait CallConfig extends ApplicationConfig {
   val countriesFile = config.getString("gen.countries.file")
-  val roamingChance = config.getString("gen.roaming.change").toString.toDouble
+  val roamingChance = config.getString("gen.roaming.change").toDouble
 
   /**
     * Tries to open a JSON-file in the classpath with the name as described "countriesFile"

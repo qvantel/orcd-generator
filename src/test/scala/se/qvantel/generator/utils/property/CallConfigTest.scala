@@ -13,9 +13,6 @@ class CallConfigTest extends FunSuite with Config {
       val stream : InputStream = getClass.getResourceAsStream(res)
       val lines = scala.io.Source.fromInputStream( stream ).mkString
 
-      // Try to read mcc-table, using the Country-model
-      // Read from the opened file
-
       assert(lines.nonEmpty)
       stream.close()
     }
