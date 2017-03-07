@@ -71,4 +71,3 @@ echo "{\"ts\": \"$retrieval_date2\", \"product_per_second\": $product_per_sec}"
 
 if [ -f output ] ; then rm output; fi
 
-
