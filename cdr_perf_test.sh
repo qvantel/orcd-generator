@@ -2,6 +2,8 @@
 
 verbose=0
 sleep_time_in_seconds=10
+cassandra_name="cassandra"
+
 
 if [ "$1" = "-v" ] ; then verbose=1; fi
 if [ "$2" ] && [ $2 -gt 0 ] ; then sleep_time_in_seconds=$2; fi
@@ -12,7 +14,7 @@ echo "Sleep time: $sleep_time_in_seconds"
 
 retrieval_date=$(date +%s)
 test $verbose -eq 1 && echo "Running cassandra fetch"
-docker exec -i cassandra cqlsh << EOF > output
+docker exec -i "$cassandra_name" cqlsh << EOF > output
 use qvantel;
 select count(*) as call from call;
 select count(*) as product from product;
