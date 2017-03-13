@@ -35,8 +35,11 @@ trait CallConfig extends ApplicationConfig {
       // Close source file
       source.close()
 
+
       // Take the Country.mcc and make it's own list with only the distinct values
-      countriesList.map(c => c.mcc.toInt).distinct
+      countriesList.filter(_.iso != "n/a")
+        .map(c => c.mcc.toInt)
+        .distinct
     }
 
   }
