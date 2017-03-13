@@ -5,8 +5,13 @@ sleep_time_in_seconds=10
 cassandra_name="cassandra"
 
 
-if [ "$1" = "-v" ] ; then verbose=1; fi
-if [ "$2" ] && [ $2 -gt 0 ] ; then sleep_time_in_seconds=$2; fi
+if [ "$1" = "-v" ] ; then
+    verbose=1;
+fi
+
+if [ -n "$2" ] && [ $2 -gt 0 ] ; then
+    sleep_time_in_seconds=$2;
+fi
 
 test $verbose -eq 1 && echo "Running in verbose mode" 
 echo "Sleep time: $sleep_time_in_seconds"
@@ -30,7 +35,9 @@ product=$(echo "$list_of_measures" | tail -n1)
 test $verbose -eq 1 && echo "current no products: $product"
 
 
-if [ -f output ] ; then rm output; fi
+if [ -f output ] ; then
+    rm output;
+fi
 
 test $verbose -eq 1 && echo "Sleeping for $sleep_time_in_seconds"
 sleep "$sleep_time_in_seconds"
@@ -69,5 +76,7 @@ test $verbose -eq 1 && echo "prod: $product_per_sec"
 echo "{\"ts\": \"$retrieval_date2\", \"call_per_second\": $call_per_sec}"
 echo "{\"ts\": \"$retrieval_date2\", \"product_per_second\": $product_per_sec}"
 
-if [ -f output ] ; then rm output; fi
+if [ -f output ] ; then
+    rm output;
+fi
 
