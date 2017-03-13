@@ -13,12 +13,18 @@ fi
 
 if [ ! -f "src/main/resources/mcc-mnc-table.json" ]
 then
+  if [ ! -d "src/main/resources/" ] ; then
+      mkdir -p "src/main/resources/"
+  fi
   echo "Copying mcc table to main/resources/"
   cp mcc-mnc-table.json src/main/resources/
 fi
 
 if [ ! -f "src/test/resources/mcc-mnc-table.json" ]
 then
+  if [ ! -d "src/test/resources/" ] ; then
+      mkdir -p "src/test/resources/"
+  fi
   echo "Copying mcc table to test/resources/"
   cp mcc-mnc-table.json src/test/resources/
 fi
