@@ -1,3 +1,7 @@
+# editor specific
+*.swp
+*.swo
+
 *.class
 *.log
 

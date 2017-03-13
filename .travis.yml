@@ -9,6 +9,7 @@ script:
  - sbt -jvm-opts travis/jvmopts.compile compile
  - sbt -jvm-opts travis/jvmopts.test test
  - sbt -jvm-opts travis/jvmopts.test scalastyle
+ - ./integration.sh
 
 cache:
   directories:

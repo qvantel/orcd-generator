@@ -11,6 +11,7 @@ trait SparkConnection extends CassandraConfig with Logger {
     .set("spark.cassandra.connection.host", ip)
     .set("spark.cassandra.auth.username", username)
     .set("spark.cassandra.auth.password", password)
+    .set("spark.cassandra.connection.port", port)
   val context = new SparkContext("local[2]", "database", conf)
   // Setup cassandra connector
   val connector = CassandraConnector(conf)
