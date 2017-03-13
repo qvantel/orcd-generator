@@ -5,17 +5,14 @@ env:
 jdk:
 - oraclejdk8
 sudo: required
-servies: 
+services:
  - docker
-
-before_install:
- - docker build -t cassandra ../Cassandra
 
 script:
  - sbt -jvm-opts travis/jvmopts.compile compile
  - sbt -jvm-opts travis/jvmopts.test test
  - sbt -jvm-opts travis/jvmopts.test scalastyle
- - ./integration.sh
+ - docker build -t cdrgenerator .
 
 cache:
   directories:
