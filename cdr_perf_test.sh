@@ -2,19 +2,38 @@
 
 verbose=0
 sleep_time_in_seconds=10
+report_to_graphite=0
 cassandra_name="cassandra"
 
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+        -v)
+            verbose=1
+            echo "Running in verbose mode"
+        ;;
+        -s)
+            if [ -z "$2" ]; then
+                echo "Argument -s needs an value"
+		exit 1
+            fi
+            sleep_time_in_seconds="$2"
+            echo "Sleep time: $sleep_time_in_seconds"
+            shift # past argument
+        ;;
+        -g)
+            report_to_graphite=1
+	    echo "Reporting to graphite is not yet implemented"
+	    exit 1
+        ;;
+        *) # unknown option
+            echo "Unknown argument $1"
+            exit 1
+        ;;
+    esac
+    shift
+done
 
-if [ "$1" = "-v" ] ; then
-    verbose=1;
-fi
-
-if [ -n "$2" ] && [ $2 -gt 0 ] ; then
-    sleep_time_in_seconds=$2;
-fi
-
-test $verbose -eq 1 && echo "Running in verbose mode" 
-echo "Sleep time: $sleep_time_in_seconds"
 
 
 retrieval_date=$(date +%s)
