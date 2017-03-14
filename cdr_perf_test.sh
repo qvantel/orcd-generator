@@ -50,32 +50,46 @@ function count_cdr() {
     end_date=$(date --iso-8601=s --date "$end_time_relative seconds")
     echo "Counting between $start_date and $end_date"
 
-    QUERY_CALL="SELECT count(created_at) FROM qvantel.call WHERE created_at > '$start_date' AND created_at < '$end_date' ALLOW FILTERING;"
-    QUERY_PRODUCT="SELECT count(created_at) FROM qvantel.product WHERE created_at > '$start_date' AND created_at < '$end_date' ALLOW FILTERING;"
+    QUERY_CALL="SELECT count(id) FROM qvantel.call WHERE created_at > '$start_date' AND created_at < '$end_date' ALLOW FILTERING;"
+    QUERY_PRODUCT="SELECT count(id) FROM qvantel.product WHERE created_at > '$start_date' AND created_at < '$end_date' ALLOW FILTERING;"
+    QUERY_CALL_TOTAL="SELECT count(id) FROM qvantel.call;"
+    QUERY_PRODUCT_TOTAL="SELECT count(id) FROM qvantel.product;"
 
     echo "Counting calls..."
-    call_count=$($CQLSH -e "$QUERY_CALL" 2>&1 | head -n 4 | tail -n 1 | tr -d ' ')
+    call_count=$($CQLSH -e "$QUERY_CALL" | head -n 4 | tail -n 1 | tr -d ' ')
+    call_count_total=$($CQLSH -e "$QUERY_CALL_TOTAL" | head -n 4 | tail -n 1 | tr -d ' ')
 
     echo "Counting products..."
-    product_count=$($CQLSH -e "$QUERY_PRODUCT" 2>&1 | head -n 4 | tail -n 1 | tr -d ' ')
+    product_count=$($CQLSH -e "$QUERY_PRODUCT" | head -n 4 | tail -n 1 | tr -d ' ')
+    product_count_total=$($CQLSH -e "$QUERY_PRODUCT_TOTAL" | head -n 4 | tail -n 1 | tr -d ' ')
 
-    [ ! -z "${call_count##*[!0-9]*}" ] || call_count=0
-    [ ! -z "${product_count##*[!0-9]*}" ] || product_count=0
+    # If fetch fails (isn't a number), set number to 0
+    [ ! -z "${call_count##*[!0-9]*}" ]          || call_count=0
+    [ ! -z "${call_count_total##*[!0-9]*}" ]    || call_count_total=0
+    [ ! -z "${product_count##*[!0-9]*}" ]       || product_count=0
+    [ ! -z "${product_count_total##*[!0-9]*}" ] || product_count_total=0
 
     call_throughput=$(( $call_count / $interval ))
     product_throughput=$(( $product_count / $interval ))
 
     # Print results
-    echo "Call: $call_throughput cdr/s ($call_count total)"
-    echo "Product: $product_throughput cdr/s ($product_count total)"
+    echo "Call: $call_throughput cdr/s ($call_count in interval, $call_count_total total)"
+    echo "Product: $product_throughput cdr/s ($product_count in interval, $product_count_total total)"
 
     # Report to graphite
     if [ "$report_to_graphite" -ne 0 ]; then
         timestamp=$(date +%s)
+
         echo "qvantel.cdrgenerator.call.throughput $call_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
+        echo "qvantel.cdrgenerator.call.entries $call_count_total $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
+
         echo "qvantel.cdrgenerator.product.throughput $product_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
+        echo "qvantel.cdrgenerator.product.entries $product_count_total $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
+
 	total_throughput=$(( $call_throughput + $product_throughput ))
-        echo "qvantel.cdrgenerator.throughput $product_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
+	total_count=$(( $call_count_total + $product_count_total ))
+        echo "qvantel.cdrgenerator.throughput $total_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
+        echo "qvantel.cdrgenerator.entries $total_count $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
     fi
 }
 
