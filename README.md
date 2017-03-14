@@ -19,4 +19,5 @@ Run a performance test:
 ```
 $ ./cdr_perf_test.sh
 ```
-Use -v flag for verbose and -s 60 for 60 seconds sleep 
+Use -s 60 for 60 seconds intervals, -g to report to graphite and -l 30 to loop every 30s
+
