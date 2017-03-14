@@ -54,11 +54,15 @@ function count_cdr() {
     QUERY_PRODUCT="SELECT count(created_at) FROM qvantel.product WHERE created_at > '$start_date' AND created_at < '$end_date' ALLOW FILTERING;"
 
     echo "Counting calls..."
-    call_count=$($CQLSH -e "$QUERY_CALL" | head -n 4 | tail -n 1 | tr -d ' ')
-    call_throughput=$(( $call_count / $interval ))
+    call_count=$($CQLSH -e "$QUERY_CALL" 2>&1 | head -n 4 | tail -n 1 | tr -d ' ')
 
     echo "Counting products..."
-    product_count=$($CQLSH -e "$QUERY_PRODUCT" | head -n 4 | tail -n 1 | tr -d ' ')
+    product_count=$($CQLSH -e "$QUERY_PRODUCT" 2>&1 | head -n 4 | tail -n 1 | tr -d ' ')
+
+    [ ! -z "${call_count##*[!0-9]*}" ] || call_count=0
+    [ ! -z "${product_count##*[!0-9]*}" ] || product_count=0
+
+    call_throughput=$(( $call_count / $interval ))
     product_throughput=$(( $product_count / $interval ))
 
     # Print results
@@ -70,6 +74,8 @@ function count_cdr() {
         timestamp=$(date +%s)
         echo "qvantel.cdrgenerator.call.throughput $call_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
         echo "qvantel.cdrgenerator.product.throughput $product_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
+	total_throughput=$(( $call_throughput + $product_throughput ))
+        echo "qvantel.cdrgenerator.total.throughput $product_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
     fi
 }
 
@@ -82,6 +88,7 @@ if [ "$loop" -gt 0 ]; then
         count_cdr
 	current_time=$(date +%s)
 	sleep_time=$(( $target_time - $current_time ))
+	echo $sleep_time | grep -q '-' && sleep_time=0 # If sleep time is negative, set it to 0
         sleep $sleep_time
     done
 else
