@@ -3,7 +3,7 @@
 interval=10
 loop=0
 report_to_graphite=0
-cassandra_name="cassandra"
+cassandra_name="cassandra_qvantel"
 
 USAGE="$0 [-s 0-9|-l 0-9|-g]"
 
@@ -75,6 +75,9 @@ function count_cdr() {
     # Print results
     echo "Call: $call_throughput cdr/s ($call_count in interval, $call_count_total total)"
     echo "Product: $product_throughput cdr/s ($product_count in interval, $product_count_total total)"
+    total_throughput=$(( $call_throughput + $product_throughput ))
+    total_count=$(( $call_count_total + $product_count_total ))
+    echo "Total: $total_throughput cdr/s ($total_count cdr records in the database)"
 
     # Report to graphite
     if [ "$report_to_graphite" -ne 0 ]; then
@@ -86,8 +89,6 @@ function count_cdr() {
         echo "qvantel.cdrgenerator.product.throughput $product_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
         echo "qvantel.cdrgenerator.product.entries $product_count_total $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
 
-	total_throughput=$(( $call_throughput + $product_throughput ))
-	total_count=$(( $call_count_total + $product_count_total ))
         echo "qvantel.cdrgenerator.throughput $total_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
         echo "qvantel.cdrgenerator.entries $total_count $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
     fi
