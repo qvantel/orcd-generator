@@ -3,8 +3,8 @@ package se.qvantel.generator.model
 import se.qvantel.generator.GenerateData
 
 object Call extends EDR {
-  def trafficCase: String = TrafficCase(scala.util.Random.nextInt(TrafficCase.maxId)).toString
-  def eventType: String = EventType(scala.util.Random.nextInt(EventType.maxId)).toString
+  def trafficCase: String = GenerateData.trafficCase()
+  def eventType: String = GenerateData.eventType()
   def bPartyNumber: String = GenerateData.msisdn()
   def bpnDestination: String = GenerateData.destination()
   // move to method if it is non static
@@ -12,7 +12,7 @@ object Call extends EDR {
   val bpn_location_area_identification = ""
   val bpn_cell_global_identification = ""
 
-  def generateBatch(): String = {
+  def generateRecord(): String = {
     // Insert call data
     val str = s"INSERT INTO qvantel.call (id, created_at, started_at, used_service_units, service, event_details, event_charges)" +
       s"VALUES (uuid(), '$timestamp', '$timestamp', " + // id, created_at and started_at
@@ -30,7 +30,7 @@ object Call extends EDR {
       s"{charged_units: {amount: $amount, unit_of_measure: '$unitOfMeasure', currency: '$currency'}," + //charged units
       s"product: {id: '$prid', name: '$prName'}," + //product
       s"charged_amounts: {{id: '$caid', name: '$caname', charged_type: '$cactype', event_type: '$caetype'," + //charged amounts
-      s"resource_type: '$cartype', amount: $amount, end_balance: $end_balance, expiry_date: '$expiry_date'}}" +
+      s"resource_type: '$cartype', amount: $amount, end_balance: $endBalance, expiry_date: '$expiry_date'}}" +
       s"});" // end of cassandra statement
     str
   }
