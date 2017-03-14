@@ -75,7 +75,7 @@ function count_cdr() {
         echo "qvantel.cdrgenerator.call.throughput $call_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
         echo "qvantel.cdrgenerator.product.throughput $product_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
 	total_throughput=$(( $call_throughput + $product_throughput ))
-        echo "qvantel.cdrgenerator.total.throughput $product_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
+        echo "qvantel.cdrgenerator.throughput $product_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
     fi
 }
 
