@@ -15,7 +15,6 @@ execScript := {
 }
 
 compile in Compile <<= (compile in Compile).dependsOn(execScript)
-logLevel in assembly := Level.Error
 
 
 resolvers += "Spark Packages Repo" at "https://dl.bintray.com/spark-packages/maven"
