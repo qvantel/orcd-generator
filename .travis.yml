@@ -4,11 +4,15 @@ env:
 - JDK=oraclejdk8
 jdk:
 - oraclejdk8
+sudo: required
+servies: 
+ - docker
 
 script:
  - sbt -jvm-opts travis/jvmopts.compile compile
  - sbt -jvm-opts travis/jvmopts.test test
  - sbt -jvm-opts travis/jvmopts.test scalastyle
+ - sbt -jvm-opts travis/jvmopts.assembly assembly
 
 cache:
   directories:
@@ -20,3 +24,4 @@ cache:
 after_success:
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+  - test $TRAVIS_BRANCH = "master" && ./trigger_core_repo_build.sh

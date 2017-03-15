@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/flygare/QvantelCDRGenerator.svg?token=B6YLB31LLNNKsSzKXpCe&branch=master)](https://travis-ci.com/flygare/QvantelCDRGenerator)
+
 # QvantelCDRGenerator
 
 Run just tests:
