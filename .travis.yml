@@ -5,8 +5,11 @@ env:
 jdk:
 - oraclejdk8
 sudo: required
-services:
+servies: 
  - docker
+
+before_install:
+ - docker build -t cassandra ../Cassandra
 
 script:
  - sbt -jvm-opts travis/jvmopts.compile compile
