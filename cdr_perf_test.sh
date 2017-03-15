@@ -31,7 +31,7 @@ while [[ $# -gt 0 ]]; do
         ;;
         *) # unknown option
             echo "Unknown argument $1"
-	    echo $USAGE
+            echo $USAGE
             exit 1
         ;;
     esac
@@ -64,10 +64,10 @@ function count_cdr() {
     product_count_total=$($CQLSH -e "$QUERY_PRODUCT_TOTAL" | head -n 4 | tail -n 1 | tr -d ' ')
 
     # If fetch fails (isn't a number), set number to 0
-    [ ! -z "${call_count##*[!0-9]*}" ]          || call_count=0
-    [ ! -z "${call_count_total##*[!0-9]*}" ]    || call_count_total=0
-    [ ! -z "${product_count##*[!0-9]*}" ]       || product_count=0
-    [ ! -z "${product_count_total##*[!0-9]*}" ] || product_count_total=0
+    [ -n "${call_count##*[!0-9]*}" ]          || call_count=0
+    [ -n "${call_count_total##*[!0-9]*}" ]    || call_count_total=0
+    [ -n "${product_count##*[!0-9]*}" ]       || product_count=0
+    [ -n "${product_count_total##*[!0-9]*}" ] || product_count_total=0
 
     call_throughput=$(( $call_count / $interval ))
     product_throughput=$(( $product_count / $interval ))
@@ -98,7 +98,7 @@ function count_cdr() {
 echo "Interval: $interval"
 if [ "$loop" -gt 0 ]; then
     echo "Loop interval: $loop"
-    while : ; do
+    while [ true ] ; do
         target_time=$(date -d "$loop seconds" +%s)
         count_cdr
 	current_time=$(date +%s)
