@@ -13,6 +13,7 @@ script:
  - sbt -jvm-opts travis/jvmopts.test test
  - sbt -jvm-opts travis/jvmopts.test scalastyle
  - sbt -jvm-opts travis/jvmopts.assembly assembly
+ - docker build -t cdrgenerator .
 
 cache:
   directories:
