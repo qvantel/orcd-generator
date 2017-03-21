@@ -104,9 +104,9 @@ if [ "$loop" -gt 0 ]; then
     while [ true ] ; do
         target_time=$(date -d "$loop seconds" +%s)
         count_cdr
-	current_time=$(date +%s)
-	sleep_time=$(( $target_time - $current_time ))
-	echo $sleep_time | grep -q '-' && sleep_time=0 # If sleep time is negative, set it to 0
+        current_time=$(date +%s)
+        sleep_time=$(( $target_time - $current_time ))
+        echo $sleep_time | grep -q '-' && sleep_time=0 # If sleep time is negative, set it to 0
         sleep $sleep_time
     done
 else
