@@ -14,6 +14,8 @@ execScript := {
   Seq("./get_latest_mcc_table.bash") !
 }
 
+logLevel in assembly := Level.Error
+
 compile in Compile <<= (compile in Compile).dependsOn(execScript)
 
 

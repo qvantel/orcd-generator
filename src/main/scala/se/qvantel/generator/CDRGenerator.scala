@@ -9,9 +9,14 @@ object CDRGenerator extends App with SparkConnection with Logger {
   val batchProduct = new BatchStatement()
   val batchCall = new BatchStatement()
   var count = 1
-  val maxBatch = GenerateData.batchSize
+  val maxBatchSize = GenerateData.batchSize
+  val nrOfMaximumBatches = GenerateData.nrOfMaximumBatches
+  var totalBatches = 0
 
-  while (true) {
+  logger.info("Config: Nr of maximum batches: " + nrOfMaximumBatches)
+  logger.info("Config: batch element size: " + maxBatchSize)
+
+  while (totalBatches < nrOfMaximumBatches || nrOfMaximumBatches == -1) {
     // Generate random data
     batchCall.add(new SimpleStatement(Call.generateRecord()))
     batchProduct.add(new SimpleStatement(Product.generateRecord()))
@@ -19,19 +24,20 @@ object CDRGenerator extends App with SparkConnection with Logger {
     // Sleep for slowing down data transfer and more realistic timestamp intervall
     if(GenerateData.sleepTime() > 0) Thread.sleep(GenerateData.sleepTime())
 
-    if (count == maxBatch) {
+    if (count == maxBatchSize) {
       session.execute(batchProduct)
       batchProduct.clear()
       session.execute(batchCall)
       batchCall.clear()
       count = 0
-      logger.info("Sent batch of " + maxBatch + " to Cassandra")
+      logger.info("Sent batch of " + maxBatchSize + " to Cassandra")
+      totalBatches = totalBatches + 1
     }
     count = count + 1
-
   }
 
+  logger.info("Closing connection")
   // Close cassandra session
   session.close()
-
+  logger.info("Closing program")
 }

@@ -13,4 +13,7 @@ trait ApplicationConfig extends Config {
 
   // The max amount of time the thread can sleep
   val maxSleep = config.getInt("gen.thread.max.sleeptime")
+
+  // Number of batchSizes until the program is ready to exit. -1 for infinity
+  val nrOfMaximumBatches = config.getInt("gen.batch.limit")
 }
