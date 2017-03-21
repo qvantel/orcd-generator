@@ -1,5 +1,8 @@
 #!/bin/bash
 
+graphite_host=127.0.0.1
+graphite_port=2003
+
 interval=10
 loop=0
 report_to_graphite=0
@@ -83,14 +86,14 @@ function count_cdr() {
     if [ "$report_to_graphite" -ne 0 ]; then
         timestamp=$(date +%s)
 
-        echo "qvantel.cdrgenerator.call.throughput $call_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
-        echo "qvantel.cdrgenerator.call.entries $call_count_total $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
+        echo "qvantel.cdrgenerator.call.throughput $call_throughput $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
+        echo "qvantel.cdrgenerator.call.entries $call_count_total $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
 
-        echo "qvantel.cdrgenerator.product.throughput $product_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
-        echo "qvantel.cdrgenerator.product.entries $product_count_total $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
+        echo "qvantel.cdrgenerator.product.throughput $product_throughput $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
+        echo "qvantel.cdrgenerator.product.entries $product_count_total $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
 
-        echo "qvantel.cdrgenerator.throughput $total_throughput $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
-        echo "qvantel.cdrgenerator.entries $total_count $timestamp" | timeout 1 nc 0.0.0.0 2003 &> /dev/null
+        echo "qvantel.cdrgenerator.throughput $total_throughput $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
+        echo "qvantel.cdrgenerator.entries $total_count $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
     fi
 }
 
