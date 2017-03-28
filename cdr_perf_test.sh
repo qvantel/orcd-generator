@@ -46,6 +46,7 @@ start_time_relative=$(( -10 - $interval ))
 end_time_relative=$(( 0 - $interval ))
 
 CQLSH="docker exec -i "$cassandra_name" cqlsh"
+CQLSH="cqlsh --cqlversion=3.4.2"
 
 function count_cdr() {
     # Set start and end time
@@ -53,53 +54,39 @@ function count_cdr() {
     end_date=$(date --iso-8601=s --date "$end_time_relative seconds")
     echo "Counting between $start_date and $end_date"
 
-    QUERY_CALL="SELECT count(id) FROM qvantel.call WHERE created_at > '$start_date' AND created_at < '$end_date' ALLOW FILTERING;"
-    QUERY_PRODUCT="SELECT count(id) FROM qvantel.product WHERE created_at > '$start_date' AND created_at < '$end_date' ALLOW FILTERING;"
-    QUERY_CALL_TOTAL="SELECT count(id) FROM qvantel.call;"
-    QUERY_PRODUCT_TOTAL="SELECT count(id) FROM qvantel.product;"
+    QUERY_TOTAL="SELECT count(id) FROM qvantel.cdr;"
 
-    echo "Counting calls..."
-    call_count=$($CQLSH -e "$QUERY_CALL" | head -n 4 | tail -n 1 | tr -d ' ')
-    call_count_total=$($CQLSH -e "$QUERY_CALL_TOTAL" | head -n 4 | tail -n 1 | tr -d ' ')
-
-    echo "Counting products..."
-    product_count=$($CQLSH -e "$QUERY_PRODUCT" | head -n 4 | tail -n 1 | tr -d ' ')
-    product_count_total=$($CQLSH -e "$QUERY_PRODUCT_TOTAL" | head -n 4 | tail -n 1 | tr -d ' ')
+    echo "Counting 1"
+    count_pre=$($CQLSH -e "$QUERY_TOTAL" | head -n 4 | tail -n 1 | tr -d ' ')
+    echo "Sleeping"
+    sleep $interval
+    echo "Counting 2"
+    count_post=$($CQLSH -e "$QUERY_TOTAL" | head -n 4 | tail -n 1 | tr -d ' ')
 
     # If fetch fails (isn't a number), set number to 0
-    [ -n "${call_count##*[!0-9]*}" ]          || call_count=0
-    [ -n "${call_count_total##*[!0-9]*}" ]    || call_count_total=0
-    [ -n "${product_count##*[!0-9]*}" ]       || product_count=0
-    [ -n "${product_count_total##*[!0-9]*}" ] || product_count_total=0
+    [ -n "${count_pre##*[!0-9]*}"  ] || count_pre=0
+    [ -n "${count_post##*[!0-9]*}" ] || count_post=0
 
-    call_throughput=$(( $call_count / $interval ))
-    product_throughput=$(( $product_count / $interval ))
+    echo $count_pre
+    echo $count_post
+    count=$(( $count_post - $count_pre ))
+    throughput=$(( $count / $interval ))
 
     # Print results
-    echo "Call: $call_throughput cdr/s ($call_count in interval, $call_count_total total)"
-    echo "Product: $product_throughput cdr/s ($product_count in interval, $product_count_total total)"
-    total_throughput=$(( $call_throughput + $product_throughput ))
-    total_count=$(( $call_count_total + $product_count_total ))
-    echo "Total: $total_throughput cdr/s ($total_count cdr records in the database)"
+    echo "$throughput cdr/s ($count_post cdr records in the database)"
 
     # Report to graphite
     if [ "$report_to_graphite" -ne 0 ]; then
         timestamp=$(date +%s)
 
-        echo "qvantel.cdrgenerator.call.throughput $call_throughput $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
-        echo "qvantel.cdrgenerator.call.entries $call_count_total $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
-
-        echo "qvantel.cdrgenerator.product.throughput $product_throughput $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
-        echo "qvantel.cdrgenerator.product.entries $product_count_total $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
-
-        echo "qvantel.cdrgenerator.throughput $total_throughput $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
-        echo "qvantel.cdrgenerator.entries $total_count $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
+        echo "qvantel.cdrgenerator.throughput $throughput $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
+        echo "qvantel.cdrgenerator.entries $count_total $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
     fi
 }
 
 
-echo "Interval: $interval"
 if [ "$loop" -gt 0 ]; then
+    interval=$loop
     echo "Loop interval: $loop"
     while [ true ] ; do
         target_time=$(date -d "$loop seconds" +%s)
@@ -110,5 +97,6 @@ if [ "$loop" -gt 0 ]; then
         sleep $sleep_time
     done
 else
+    echo "Interval: $interval"
     count_cdr
 fi
