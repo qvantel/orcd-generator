@@ -18,7 +18,9 @@ object CDRGenerator extends App with SparkConnection with Logger {
   logger.info("Config: Nr of maximum batches: " + nrOfMaximumBatches)
   logger.info("Config: batch element size: " + maxBatchSize)
 
+  //trend.setBackInTimeHours(GenerateData.backInTimeHours)
   var products = Trends.trends
+
 
   def nextTrendEvent(trend: Product, ts: Long) : Long = {
     val sleep = (1000/GenerateData.cdrModifier)/trend.points(0).cdrPerSec
@@ -37,6 +39,7 @@ object CDRGenerator extends App with SparkConnection with Logger {
     */
   }
   while (totalBatches < nrOfMaximumBatches || nrOfMaximumBatches == -1) {
+
     val nextEntry = products.head
 
     // Sleep until next event to be generated
