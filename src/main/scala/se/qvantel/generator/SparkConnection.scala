@@ -3,7 +3,7 @@ package se.qvantel.generator
 import com.datastax.spark.connector.cql.CassandraConnector
 import org.apache.spark.{SparkConf, SparkContext}
 import se.qvantel.generator.utils.Logger
-import se.qvantel.generator.utils.property.CassandraConfig
+import se.qvantel.generator.utils.property.config.CassandraConfig
 
 trait SparkConnection extends CassandraConfig with Logger {
   // Configure spark->cassandra connection

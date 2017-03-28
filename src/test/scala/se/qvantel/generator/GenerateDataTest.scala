@@ -1,7 +1,7 @@
 package se.qvantel.generator
 
 import org.scalatest.FunSuite
-import se.qvantel.generator.utils.property.DataConfig
+import se.qvantel.generator.utils.property.config.DataConfig
 
 class GenerateDataTest extends FunSuite with DataConfig {
 

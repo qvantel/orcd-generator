@@ -1,8 +1,0 @@
-{
-    "name": "Cheap Calls After 22:00",
-    "campaignId" : "1",
-    "startHour" : "22:00",
-    "endHour" : "02:00",
-    "peakHour" : "22:30",
-    "priority" : 3
-}

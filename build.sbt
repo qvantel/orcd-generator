@@ -27,7 +27,8 @@ libraryDependencies ++= Seq(
   "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-M3",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "com.typesafe" % "config" % "1.3.1",
-  "org.json4s" %% "json4s-native" % "3.5.0")
+  "org.json4s" %% "json4s-native" % "3.5.0",
+  "de.ummels" %% "scala-prioritymap" % "1.0.0")
 
 // This part is required for spark to assemble
 // Why? I don't know, but it works

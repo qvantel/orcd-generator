@@ -1,5 +1,4 @@
-package se.qvantel.generator.utils.property
-
+package se.qvantel.generator.utils.property.config
 
 trait CassandraConfig extends Config {
   val ip = config.getString("cassandra.ip")

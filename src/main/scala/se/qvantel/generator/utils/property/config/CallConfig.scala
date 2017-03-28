@@ -1,8 +1,8 @@
-package se.qvantel.generator.utils.property
+package se.qvantel.generator.utils.property.config
 
 import java.io.InputStream
-import org.json4s.DefaultFormats
-import org.json4s._
+
+import org.json4s.{DefaultFormats, _}
 import org.json4s.native.JsonMethods._
 import se.qvantel.generator.model.Country
 

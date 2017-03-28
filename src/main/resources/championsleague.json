@@ -1,0 +1,25 @@
+{
+    "name": "Champions League Final",
+    "serviceType": "data",
+    "campaignId" : "2", 
+    "startHour" : "21:00",
+    "endHour" : "23:30",
+    "points" : [
+        {
+            "ts": "21:00",
+            "cdrPerSec": 300
+        },
+        {
+            "ts": "22:00",
+            "cdrPerSec": 500
+        },
+        {
+            "ts": "23:00",
+            "cdrPerSec": 500
+        },
+        {
+            "ts": "23:15",
+            "cdrPerSec": 150
+        }
+    ]
+}

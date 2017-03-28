@@ -2,8 +2,7 @@ package se.qvantel.generator
 
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.{EventType, Service, TrafficCase, UnitOfMeasure}
-import se.qvantel.generator.utils.property.{ApplicationConfig, CallConfig, DataConfig}
-import utils.property.CallConfig
+import se.qvantel.generator.utils.property.config.{CallConfig, DataConfig}
 
 import scala.util.Random
 

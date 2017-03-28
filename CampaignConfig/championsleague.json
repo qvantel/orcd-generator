@@ -1,8 +1,0 @@
-{
-    "name": "Champions League Final",
-    "campaignId" : "2", 
-    "startHour" : "21:00",
-    "endHour" : "23:30",
-    "peakHour" : "22:30",
-    "priority" : 5
-}

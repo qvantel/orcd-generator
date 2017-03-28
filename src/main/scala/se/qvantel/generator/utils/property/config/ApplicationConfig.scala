@@ -1,4 +1,4 @@
-package se.qvantel.generator.utils.property
+package se.qvantel.generator.utils.property.config
 
 trait ApplicationConfig extends Config {
 
@@ -16,4 +16,10 @@ trait ApplicationConfig extends Config {
 
   // Number of batchSizes until the program is ready to exit. -1 for infinity
   val nrOfMaximumBatches = config.getInt("gen.batch.limit")
+
+  // Threshhold for max cdr to send to cassandra per second
+  val cassandraThreshold = config.getInt("gen.cassandra.threshhold")
+
+  // Scale up or scale down the amount of cdrs generated (1 for realistic values)
+  val cdrModifier = config.getDouble("gen.modifier")
 }

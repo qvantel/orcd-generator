@@ -1,8 +1,0 @@
-{
-    "name": "Free Facebook",
-    "campaignId" : "3",
-    "startHour" : "00:00",
-    "endHour" : "23:59",
-    "peakHour" : "17:30",
-    "priority" : 3
-}

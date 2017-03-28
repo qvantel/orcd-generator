@@ -1,0 +1,17 @@
+{
+    "name": "Call",
+    "eventType": "call",
+    "campaignId" : null,
+    "startHour" : null,
+    "endHour" : null,
+    "points" : [
+        {
+            "ts": "04:00",
+            "cdrPerSec": 1000
+        },
+        {
+            "ts": "12:00",
+            "cdrPerSec": 5000
+        }
+    ]
+}
