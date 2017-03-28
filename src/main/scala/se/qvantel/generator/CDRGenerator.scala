@@ -22,7 +22,7 @@ object CDRGenerator extends App with SparkConnection with Logger {
 
   def nextTrendEvent(trend: Product, ts: Long) : Long = {
     val sleep = (1000/GenerateData.cdrModifier)/trend.points(0).cdrPerSec
-    println(sleep)
+    logger.info(sleep.toString)
     val next = ts + sleep
     next.toLong
     /*
@@ -41,13 +41,14 @@ object CDRGenerator extends App with SparkConnection with Logger {
 
     // Sleep until next event to be generated
     val sleeptime = nextEntry._2 - DateTime.now().getMillis
-    if (sleeptime >= 0)
+    if (sleeptime >= 0) {
       Thread.sleep(sleeptime)
+    }
 
     // Debug print
     val ts = new DateTime(nextEntry._2)
     val productname = nextEntry._1.name
-    println(s"$ts - $productname")
+    logger.info(s"$ts - $productname")
 
     // Generate CDR
     nextEntry._1.serviceType match {
