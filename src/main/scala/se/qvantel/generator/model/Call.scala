@@ -32,6 +32,7 @@ object Call extends EDR {
       s"charged_amounts: {{id: '$caid', name: '$caname', charged_type: '$cactype', event_type: '$caetype'," + //charged amounts
       s"resource_type: '$cartype', amount: $amount, end_balance: $endBalance, expiry_date: '$expiry_date'}}" +
       s"});" // end of cassandra statement
+    //println(str)
     str
   }
 }

@@ -38,6 +38,8 @@ object GenerateData extends CallConfig with DataConfig {
 
   def timeStamp(): DateTime = DateTime.now(DateTimeZone.UTC)
 
+  def timeStamp(days: Int): DateTime = DateTime.now(DateTimeZone.UTC).minusMinutes(days)
+
   def eventType(): String = EventType(Random.nextInt(EventType.maxId)).toString
 
   def trafficCase(): String = TrafficCase(Random.nextInt(TrafficCase.maxId)).toString
