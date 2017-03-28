@@ -14,19 +14,12 @@ object CDRGenerator extends App with SparkConnection with Logger {
   val maxBatchSize = GenerateData.batchSize
   val nrOfMaximumBatches = GenerateData.nrOfMaximumBatches
   var totalBatches = 0
-  val cdrDensity = 15// How many cdr's per second since timestamp.
-  val generateBackInTime = true// Disable to not generate back in time.
-
-  def backInTimeGenerator(days : Int, hours : Int) : Unit = {
-    var dayZ = 3
-  }
 
   logger.info("Config: Nr of maximum batches: " + nrOfMaximumBatches)
   logger.info("Config: batch element size: " + maxBatchSize)
 
   //trend.setBackInTimeHours(GenerateData.backInTimeHours)
   var products = Trends.trends
-
 
   def nextTrendEvent(trend: Product, ts: Long) : Long = {
     val sleep = (1000/GenerateData.cdrModifier)/trend.points(0).cdrPerSec
