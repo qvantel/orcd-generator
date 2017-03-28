@@ -21,14 +21,14 @@ object Trends {
     // For json4s, specify parse format
     implicit val format = DefaultFormats
 
-    // Parse the contents, extract to a list of campaigns
-    val campaign = parse(lines.toString()).extract[Product]
+    // Parse the contents, extract to a list of plans
+    val plan = parse(lines.toString()).extract[Product]
 
     // Close source file
     source.close()
 
-    // Return the gathered trends
-    trends
+    // Return the gathered plan
+    plan
   }
 
   def readTrendsFromFile () : PriorityMap[Product, Long] = {
@@ -38,7 +38,6 @@ object Trends {
       parseTrendFromFile("/freefacebook.json") -> ts,
       parseTrendFromFile("/afterten.json") -> ts,
       parseTrendFromFile("/championsleague.json") -> ts,
-      parseTrendFromFile("/call.json") -> ts,
       parseTrendFromFile("/callplannormal.json") -> ts
     )
     //myCampaigns.map(fileName => parseTrendFromFile(fileName))
