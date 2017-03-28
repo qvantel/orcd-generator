@@ -1,31 +1,35 @@
 package se.qvantel.generator.model
 
 import org.joda.time.DateTime
+import se.qvantel.generator.model.product.Product
 import se.qvantel.generator.GenerateData
 
 object EDR {
-  def timestamp: DateTime = GenerateData.timeStamp()
   def amount: Int = GenerateData.amount()
   def unitOfMeasure: String = GenerateData.unitOfMeasure()
-  def service: String = GenerateData.service()
   def isRoaming: Boolean = GenerateData.isRoaming()
   def aPartyNumber: String = GenerateData.msisdn()
   def apnDestination: String = GenerateData.destination()
+  var timestamp = new DateTime
   val apn_location_number = ""
   val apn_location_area_identification = ""
   val apn_cell_global_identification = ""
   val currency = ""
   val prid = ""
-  def prName: String = GenerateData.product()
+  var prName = ""
   val caid = ""
   val caname = ""
+  var service  = ""
   val cactype = ""
   val caetype = ""
   val cartype = ""
   def endBalance: Int = GenerateData.amount()
   val expiry_date = ""
 
-  def generateRecord(): String = {
+  def generateRecord(product: Product, ts: DateTime): String = {
+    service = product.serviceType
+    prName = product.name
+    timestamp = ts
     service match {
       case "voice" => generateVoiceRecord()
       case _ => generateDataRecord()

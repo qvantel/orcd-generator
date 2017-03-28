@@ -6,7 +6,7 @@ import de.ummels.prioritymap.PriorityMap
 import org.joda.time.DateTime
 import org.json4s.native.JsonMethods._
 import org.json4s.DefaultFormats
-import se.qvantel.generator.model.campaign.Product
+import se.qvantel.generator.model.product.Product
 
 object Trends {
 
