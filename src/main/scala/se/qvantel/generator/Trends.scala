@@ -1,9 +1,10 @@
 package se.qvantel.generator
 
 import java.io.InputStream
+import java.util.TimeZone
 
 import de.ummels.prioritymap.PriorityMap
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, DateTimeZone}
 import org.json4s.native.JsonMethods._
 import org.json4s.DefaultFormats
 import se.qvantel.generator.model.product.Product
@@ -36,7 +37,7 @@ object Trends extends ApplicationConfig with Logger{
 
   def readTrendsFromFile () : PriorityMap[Product, Long] = {
     //val myCampaigns = List("/freefacebook.json", "/afterten.json", "/championsleague.json", "/call.json")
-    val ts = DateTime.now().minusHours(backInTimeHours).getMillis
+    val ts = DateTime.now(DateTimeZone.UTC).minusHours(backInTimeHours).getMillis
     logger.info("Back in time hours is set to: " + backInTimeHours)
     PriorityMap(
       parseTrendFromFile("/freefacebook.json") -> ts,

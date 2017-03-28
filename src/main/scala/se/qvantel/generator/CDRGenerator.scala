@@ -1,7 +1,7 @@
 package se.qvantel.generator
 
 import com.datastax.driver.core.{BatchStatement, SimpleStatement}
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.EDR
 import se.qvantel.generator.model.product.Product
 import utils.Logger
@@ -42,10 +42,10 @@ object CDRGenerator extends App with SparkConnection with Logger {
     val nextEntry = products.head
     val product = nextEntry._1
     val tsMillis = nextEntry._2
-    val ts = new DateTime(tsMillis)
+    val ts = new DateTime(tsMillis, DateTimeZone.UTC)
 
     // Sleep until next event to be generated
-    val sleeptime = tsMillis - DateTime.now().getMillis
+    val sleeptime = tsMillis - DateTime.now(DateTimeZone.UTC).getMillis
     if (sleeptime >= 0) {
       Thread.sleep(sleeptime)
     }
