@@ -22,4 +22,7 @@ trait ApplicationConfig extends Config {
 
   // Scale up or scale down the amount of cdrs generated (1 for realistic values)
   val cdrModifier = config.getDouble("gen.modifier")
+
+  // Total amount of hours to generate back in time
+  val backInTimeHours = config.getInt("gen.back.in.time")
 }
