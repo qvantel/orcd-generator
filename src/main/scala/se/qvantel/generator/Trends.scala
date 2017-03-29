@@ -1,31 +1,32 @@
 package se.qvantel.generator
 
-import java.io.InputStream
-import java.util.TimeZone
+import java.io.File
+import scala.io.Source
 
 import de.ummels.prioritymap.PriorityMap
 import org.joda.time.{DateTime, DateTimeZone}
 import org.json4s.native.JsonMethods._
 import org.json4s.DefaultFormats
-import se.qvantel.generator.CDRGenerator.logger
 import se.qvantel.generator.model.product.Product
 import se.qvantel.generator.utils.Logger
 import se.qvantel.generator.utils.property.config.ApplicationConfig
+
+import scala.collection.mutable
+import scala.io.Source
 
 
 object Trends extends ApplicationConfig with Logger{
   val trends = readTrendsFromFile()
 
-  private def parseTrendFromFile(filename:String) : Product = {
+  private def parseTrendFromFile(filename: String) : Product = {
+    // Open file
+    val source = Source.fromFile(filename)
 
-    val filePath = s"/trends/$filename"
-    val source : InputStream = getClass.getResourceAsStream(filePath)
     // Finally, read the actuals contents into a string.
-    val lines = scala.io.Source.fromInputStream( source ).mkString
+    val lines = source.mkString
 
     // For json4s, specify parse format
     implicit val format = DefaultFormats
-
 
     // Parse the contents, extract to a list of plans
     val plan = parse(lines.toString()).extract[Product]
@@ -37,17 +38,25 @@ object Trends extends ApplicationConfig with Logger{
     plan
   }
 
-  def readTrendsFromFile () : PriorityMap[Product, Long] = {
-    //val myCampaigns = List("/freefacebook.json", "/afterten.json", "/championsleague.json", "/call.json")
+  private def readTrendsFromFile () : PriorityMap[Product, Long] = {
     val ts = DateTime.now(DateTimeZone.UTC).minusHours(backInTimeHours).getMillis
     logger.info("Back in time hours is set to: " + backInTimeHours)
-    PriorityMap(
-      parseTrendFromFile("freefacebook.json") -> ts,
-      parseTrendFromFile("afterten.json") -> ts,
-      parseTrendFromFile("championsleague.json") -> ts,
-      parseTrendFromFile("callplannormal.json") -> ts
-    )
-    //myCampaigns.map(fileName => parseTrendFromFile(fileName))
+
+    // List all config files in resorces/trends
+    def recursiveListFiles(f: File): Array[File] = {
+      val these = f.listFiles.filter(_.isFile)
+      these ++ f.listFiles.filter(_.isDirectory).flatMap(recursiveListFiles)
+    }
+    val url = getClass.getClassLoader.getResource("trends")
+    val files = recursiveListFiles(new File(url.toURI()))
+
+    // Create a priority list out of all products with default timestamp
+    var pmap = mutable.HashMap.empty[Product, Long]
+    files.foreach(f => pmap.put(parseTrendFromFile(f.toString), ts))
+    val pmaplist = pmap.toList
+
+    // Return priority map
+    PriorityMap(pmap.toList:_*)
   }
 
 
