@@ -19,7 +19,6 @@ object Trends extends ApplicationConfig with Logger{
   private def parseTrendFromFile(filename:String) : Product = {
 
     val filePath = s"/trends/$filename"
-    println(filePath)
     val source : InputStream = getClass.getResourceAsStream(filePath)
     // Finally, read the actuals contents into a string.
     val lines = scala.io.Source.fromInputStream( source ).mkString
