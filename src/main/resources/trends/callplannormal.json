@@ -1,16 +1,16 @@
 {
-    "name": "Call",
-    "eventType": "call",
+    "name" : "Call Plan Normal",
+    "serviceType": "voice",
     "campaignId" : null,
     "startHour" : null,
     "endHour" : null,
     "points" : [
         {
-            "ts": "04:00",
+            "ts": 4,
             "cdrPerSec": 1000
         },
         {
-            "ts": "12:00",
+            "ts": 12,
             "cdrPerSec": 5000
         }
     ]

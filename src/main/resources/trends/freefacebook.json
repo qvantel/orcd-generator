@@ -2,31 +2,29 @@
     "name": "Free Facebook",
     "serviceType" : "data",
     "campaignId" : "3",
-    "startHour" : "00:00",
-    "endHour" : "23:59",
     "points" : [
         {
-            "ts": "04:00",
+            "ts": 4,
             "cdrPerSec": 50
         },
         {
-            "ts": "12:00",
+            "ts": 12,
             "cdrPerSec": 300
         },
         {
-            "ts": "13:00",
+            "ts": 13,
             "cdrPerSec": 150
         },
         {
-            "ts": "16:00",
+            "ts": 16,
             "cdrPerSec": 200
         },
         {
-            "ts": "18:00",
+            "ts": 18,
             "cdrPerSec": 400
         },
         {
-            "ts": "23:00",
+            "ts": 23,
             "cdrPerSec": 150
         }
     ]
