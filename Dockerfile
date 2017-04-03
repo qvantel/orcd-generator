@@ -31,5 +31,5 @@ RUN set -x \
 
 # Copy and run CDRGenerator.jar
 COPY target/scala-2.11/CDRGenerator.jar /home/CDRGenerator.jar
-COPY src/main/resources/application.conf /home/application.conf
-CMD ["java","-Dnetty.epoll.enabled=false","-Dconfig.file=/home/application.conf","-jar","/home/CDRGenerator.jar"]
+COPY src/main/resources/* /home/
+CMD ["java","-Dnetty.epoll.enabled=false","-Dconfig.file=/home/application.conf","-Dtrends.dir=/home/trends/","-jar","/home/CDRGenerator.jar"]
