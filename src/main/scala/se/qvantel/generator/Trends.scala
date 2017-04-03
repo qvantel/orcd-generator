@@ -42,8 +42,16 @@ object Trends extends ApplicationConfig with Logger{
       val these = f.listFiles.filter(_.isFile)
       these ++ f.listFiles.filter(_.isDirectory).flatMap(recursiveListFiles)
     }
-    val url = getClass.getClassLoader.getResource("trends")
-    val files = recursiveListFiles(new File(url.toURI()))
+
+    var trendsDirPath = ""
+    if (System.getProperty("trends.dir") != null) {
+      trendsDirPath = System.getProperty("trends.dir")
+      logger.info("eh")
+    }
+    else {
+      trendsDirPath = getClass.getClassLoader.getResource("/trends/").getPath
+    }
+    val files = recursiveListFiles(new File(trendsDirPath))
 
     // Create a priority list out of all products with default timestamp
     var pmap = mutable.HashMap.empty[Product, Long]
