@@ -16,8 +16,6 @@ import scala.io.Source
 
 
 object Trends extends ApplicationConfig with Logger{
-  val trends = readTrendsFromFile()
-
   private def parseTrendFromFile(filename: String) : Product = {
     // Open file
     val source = Source.fromFile(filename)
@@ -38,10 +36,7 @@ object Trends extends ApplicationConfig with Logger{
     plan
   }
 
-  private def readTrendsFromFile () : PriorityMap[Product, Long] = {
-    val ts = DateTime.now(DateTimeZone.UTC).minusHours(backInTimeHours).getMillis
-    logger.info("Back in time hours is set to: " + backInTimeHours)
-
+  def readTrendsFromFile (startTs: DateTime) : PriorityMap[Product, Long] = {
     // List all config files in resorces/trends
     def recursiveListFiles(f: File): Array[File] = {
       val these = f.listFiles.filter(_.isFile)
@@ -52,7 +47,7 @@ object Trends extends ApplicationConfig with Logger{
 
     // Create a priority list out of all products with default timestamp
     var pmap = mutable.HashMap.empty[Product, Long]
-    files.foreach(f => pmap.put(parseTrendFromFile(f.toString), ts))
+    files.foreach(f => pmap.put(parseTrendFromFile(f.toString), startTs.getMillis))
     val pmaplist = pmap.toList
 
     // Return priority map
