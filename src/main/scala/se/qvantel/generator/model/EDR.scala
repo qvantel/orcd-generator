@@ -10,7 +10,8 @@ object EDR {
   def isRoaming: Boolean = GenerateData.isRoaming()
   def aPartyNumber: String = GenerateData.msisdn()
   def apnDestination: String = GenerateData.destination()
-  var timestamp = new DateTime
+  val clustering_key = 0
+  var timestamp : Long = 0
   val apn_location_number = ""
   val apn_location_area_identification = ""
   val apn_cell_global_identification = ""
@@ -26,10 +27,10 @@ object EDR {
   def endBalance: Int = GenerateData.amount()
   val expiry_date = ""
 
-  def generateRecord(product: Product, ts: DateTime): String = {
+  def generateRecord(product: Product, tsNanos: Long): String = {
     service = product.serviceType
     prName = product.name
-    timestamp = ts
+    timestamp = tsNanos
     service match {
       case "voice" => generateVoiceRecord()
       case _ => generateDataRecord()
@@ -47,8 +48,8 @@ object EDR {
     val bpn_location_area_identification = ""
     val bpn_cell_global_identification = ""
 
-    val call = s"INSERT INTO qvantel.cdr (id, created_at, started_at, used_service_units, service, event_details, event_charges)" +
-      s"VALUES (uuid(), '$timestamp', '$timestamp', " + // id, created_at and started_at
+    val call = s"INSERT INTO qvantel.cdr (id, created_at, started_at, clustering_key, used_service_units, service, event_details, event_charges)" +
+      s"VALUES (uuid(), $timestamp, $timestamp, $clustering_key, " + // id, created_at, started_at, clustering_key
       s"{amount:$amount, unit_of_measure:'$unitOfMeasure', currency: '$currency'}, " + // used_service_units
       s"'$service'," + // service
       s"{traffic_case: '$trafficCase', event_type: '$eventType', a_party_number: '$aPartyNumber', " + //event_details
@@ -72,8 +73,8 @@ object EDR {
     // Product specific generation variables
     val apname = ""
 
-    val prod = s"INSERT INTO qvantel.cdr (id, created_at, started_at, used_service_units, service, event_details, event_charges)" +
-      s"VALUES (uuid(), '$timestamp', '$timestamp', " + // id, created_at and started_at
+    val prod = s"INSERT INTO qvantel.cdr (id, created_at, started_at, clustering_key, used_service_units, service, event_details, event_charges)" +
+      s"VALUES (uuid(), $timestamp, $timestamp, $clustering_key, " + // id, created_at, started_at, clustering_key
       s"{amount:$amount, unit_of_measure:'$unitOfMeasure', currency: '$currency'}, " + // used_service_units
       s"'$service'," + // service
       s"{access_point_name: '$apname', a_party_number: '$aPartyNumber', " + //event_details

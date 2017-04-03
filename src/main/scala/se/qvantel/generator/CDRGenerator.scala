@@ -6,6 +6,8 @@ import se.qvantel.generator.model.EDR
 import se.qvantel.generator.model.product.Product
 import utils.Logger
 
+import scala.util.Random
+
 
 object CDRGenerator extends App with SparkConnection with Logger {
   // Prepare batch
@@ -26,6 +28,7 @@ object CDRGenerator extends App with SparkConnection with Logger {
     val nextEntry = products.head
     val product = nextEntry._1
     val tsMillis = nextEntry._2
+    val tsNanos = (tsMillis*1000000 + (Random.nextFloat()%1000000)).toLong
     val ts = new DateTime(tsMillis, DateTimeZone.UTC)
 
     // Sleep until next event to be generated
@@ -39,7 +42,7 @@ object CDRGenerator extends App with SparkConnection with Logger {
     logger.info(s"$ts - $productname")
 
     // Generate CDR
-    val edrQuery = EDR.generateRecord(product, ts)
+    val edrQuery = EDR.generateRecord(product, tsNanos)
     batch.add(new SimpleStatement(edrQuery))
 
     // Calculate next time this type of event should be generated
