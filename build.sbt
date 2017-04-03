@@ -28,6 +28,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "com.typesafe" % "config" % "1.3.1",
   "org.json4s" %% "json4s-native" % "3.5.0",
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
   "de.ummels" %% "scala-prioritymap" % "1.0.0")
 
 // This part is required for spark to assemble
