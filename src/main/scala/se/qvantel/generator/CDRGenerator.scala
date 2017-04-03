@@ -2,12 +2,10 @@ package se.qvantel.generator
 
 import com.datastax.driver.core.{BatchStatement, SimpleStatement}
 import org.joda.time.{DateTime, DateTimeZone}
-import se.qvantel.generator.Trends.{backInTimeHours, logger}
 import se.qvantel.generator.model.EDR
-import se.qvantel.generator.model.product.Product
+import com.datastax.spark.connector._
 import se.qvantel.generator.utils.property.config.ApplicationConfig
 import utils.Logger
-
 import scala.util.Random
 
 
@@ -21,13 +19,19 @@ object CDRGenerator extends App with SparkConnection with Logger with Applicatio
   logger.info("Config: Nr of maximum batches: " + nrOfMaximumBatches)
   logger.info("Config: batch element size: " + maxBatchSize)
 
-  def getLastSync(): DateTime ={
-    val lastSyncNs = session.execute(
-      "select created_at from qvantel.cdr " +
-      "where clustering_key=0 " +
-      "ORDER BY created_at DESC limit 1 allow filtering;"
-    ).one().getLong(0)
-    new DateTime(lastSyncNs / 1000, DateTimeZone.UTC)
+  def getLastSync(): DateTime = {
+    val cdrRdd = context.cassandraTable("qvantel", "call")
+    val rows = cdrRdd.select("created_at")
+      .where("clustering_key=0")
+      .clusteringOrder(rdd.ClusteringOrder.Descending)
+      .limit(1).collect()
+    if (rows.length < 1) {
+      new DateTime(0, DateTimeZone.UTC)
+    }
+    else {
+      val lastSyncNs = rows.apply(0).getLong(0)
+      new DateTime(lastSyncNs / 1000, DateTimeZone.UTC)
+    }
   }
 
   val lastSync = getLastSync()
