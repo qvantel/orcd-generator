@@ -20,7 +20,7 @@ object CDRGenerator extends App with SparkConnection with Logger with Applicatio
   logger.info("Config: batch element size: " + maxBatchSize)
 
   def getLastSync(): DateTime = {
-    val cdrRdd = context.cassandraTable("qvantel", "call")
+    val cdrRdd = context.cassandraTable("qvantel", "cdr")
     val rows = cdrRdd.select("created_at")
       .where("clustering_key=0")
       .clusteringOrder(rdd.ClusteringOrder.Descending)
