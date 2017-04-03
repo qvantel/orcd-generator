@@ -1,12 +1,13 @@
 package se.qvantel.generator
 
-import com.datastax.driver.core.{BatchStatement, SimpleStatement}
+import com.datastax.driver.core.{BatchStatement, ResultSet, SimpleStatement}
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.EDR
 import com.datastax.spark.connector._
 import se.qvantel.generator.utils.property.config.ApplicationConfig
 import utils.Logger
-import scala.util.Random
+
+import scala.util.{Failure, Random, Success, Try}
 
 
 object CDRGenerator extends App with SparkConnection with Logger with ApplicationConfig {
@@ -47,38 +48,44 @@ object CDRGenerator extends App with SparkConnection with Logger with Applicatio
 
   while (totalBatches < nrOfMaximumBatches || nrOfMaximumBatches == -1) {
 
-    val nextEntry = products.head
-    val product = nextEntry._1
-    val tsMillis = nextEntry._2
-    val tsNanos = tsMillis*1000 + (Random.nextInt()%1000)
-    val ts = new DateTime(tsMillis, DateTimeZone.UTC)
+    val execBatch = Try {
+      val nextEntry = products.head
+      val product = nextEntry._1
+      val tsMillis = nextEntry._2
+      val tsNanos = tsMillis*1000 + (Random.nextInt()%1000)
+      val ts = new DateTime(tsMillis, DateTimeZone.UTC)
 
-    // Sleep until next event to be generated
-    val sleeptime = tsMillis - DateTime.now(DateTimeZone.UTC).getMillis
-    if (sleeptime >= 0) {
-      Thread.sleep(sleeptime)
+      // Sleep until next event to be generated
+      val sleeptime = tsMillis - DateTime.now(DateTimeZone.UTC).getMillis
+      if (sleeptime >= 0) {
+        Thread.sleep(sleeptime)
+      }
+
+      // Debug print
+      val productname = product.name
+      logger.info(s"$ts - $productname")
+
+      // Generate CDR
+      val edrQuery = EDR.generateRecord(product, tsNanos)
+      batch.add(new SimpleStatement(edrQuery))
+
+      // Calculate next time this type of event should be generated
+      val nextTs = Trends.nextTrendEvent(product, tsMillis)
+      products = products + (product -> nextTs)
+
+      if (count == maxBatchSize) {
+        session.execute(batch)
+        batch.clear()
+        count = 0
+        totalBatches += 1
+      }
+      count += 1
     }
 
-    // Debug print
-    val productname = product.name
-    logger.info(s"$ts - $productname")
-
-    // Generate CDR
-    val edrQuery = EDR.generateRecord(product, tsNanos)
-    batch.add(new SimpleStatement(edrQuery))
-
-    // Calculate next time this type of event should be generated
-    val nextTs = Trends.nextTrendEvent(product, tsMillis)
-    products = products + (product -> nextTs)
-
-    if (count == maxBatchSize) {
-      session.execute(batch)
-      batch.clear()
-      count = 0
-      //logger.info("Sent batch of " + maxBatchSize + " to Cassandra")
-      totalBatches += 1
+    execBatch match {
+      case Success(_) =>
+      case Failure(e) => logger.error(e.toString)
     }
-    count += 1
   }
 
   logger.info("Closing connection")
