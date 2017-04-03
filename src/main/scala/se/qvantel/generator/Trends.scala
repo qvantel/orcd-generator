@@ -46,7 +46,7 @@ object Trends extends ApplicationConfig with Logger{
     var trendsDirPath = ""
     if (System.getProperty("trends.dir") != null) {
       trendsDirPath = System.getProperty("trends.dir")
-      logger.info("eh")
+      logger.info(s"Loading trends from $trendsDirPath")
     }
     else {
       trendsDirPath = getClass.getClassLoader.getResource("/trends/").getPath
