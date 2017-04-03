@@ -61,43 +61,63 @@ object Trends extends ApplicationConfig with Logger{
 
 
   def nextTrendEvent(trend: Product, ts: Long) : Long = {
-    val currenthour = new DateTime(ts, DateTimeZone.UTC).hourOfDay().get()
+    var tsDT = new DateTime(ts, DateTimeZone.UTC)
+    val currentHour = tsDT.minuteOfDay().get().toDouble/60
 
     var low = 0.0
     var high = 0.0
-    var trendi = 0
+    var trendi = -1
     while (high == 0){
-      if (trendi >= trend.points.length){
+      trendi += 1
+      if (trendi == trend.points.length-1){
         low = low - 24
-        high = trend.points(0).ts
+        high = trend.points.head.ts
       }
       else {
-        if (trend.points(trendi).ts < currenthour) {
+        if (trend.points(trendi).ts < currentHour) {
           low = trend.points(trendi).ts
         }
         else {
           high = trend.points(trendi).ts
         }
       }
-      trendi += 1
     }
-    trendi -= 1
 
     var trendiPrev = trendi - 1
     if (trendi == 0) {
       trendiPrev = trend.points.length-1
     }
 
-    val fraction = (currenthour-low)/(high-low)
+    var hourDiffLow = 0.0
+    var hourDiffHigh = 0.0
+    if (low >= 0) {
+      hourDiffLow  = currentHour - low
+      hourDiffHigh = high - low
+    }
+    else {
+      hourDiffLow  = 24 - currentHour - low
+      hourDiffHigh = 24 - high - low
+    }
+    val fraction = hourDiffLow/hourDiffHigh
     val cdrPrev = trend.points(trendiPrev).cdrPerSec
     val cdrNext = trend.points(trendi).cdrPerSec
     val cdrPerSec = (cdrPrev*(1-fraction)) + (cdrNext*fraction)
 
-    logger.debug(s"$currenthour = $low -> $high = $fraction")
-    logger.debug(s"$cdrPrev -> $cdrNext = $cdrPerSec")
-
     val sleep = (1000/GenerateData.cdrModifier)/cdrPerSec
-    logger.info(sleep.toString)
+    if (fraction < 0 || fraction > 1) {
+      logger.error("Fraction has an invalid value!")
+      logger.error(s"\tHour: $currentHour = $low -> $high")
+      logger.error(s"\tFraction: $hourDiffLow / $hourDiffHigh = $fraction")
+      logger.error(s"\tCDR: $cdrPrev -> $cdrNext = $cdrPerSec")
+      logger.error(s"\tSleep: $sleep")
+    }
+    else if (sleep < 0) {
+      logger.error("Sleep is less than 0!")
+      logger.error(s"\tHour: $currentHour = $low -> $high")
+      logger.error(s"\tFraction: $hourDiffLow / $hourDiffHigh = $fraction")
+      logger.error(s"\tCDR: $cdrPrev -> $cdrNext = $cdrPerSec")
+      logger.error(s"\tSleep: $sleep")
+    }
     var next = ts + sleep
     next.toLong
   }

@@ -50,7 +50,7 @@ object CDRGenerator extends App with SparkConnection with Logger {
       session.execute(batch)
       batch.clear()
       count = 0
-      logger.info("Sent batch of " + maxBatchSize + " to Cassandra")
+      //logger.info("Sent batch of " + maxBatchSize + " to Cassandra")
       totalBatches += 1
     }
     count += 1
