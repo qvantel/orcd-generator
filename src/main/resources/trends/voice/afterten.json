@@ -4,16 +4,16 @@
     "campaignId" : "1",
     "points" : [
         {
-            "ts": 24,
+            "ts": 0,
             "cdrPerSec": 50
         },
         {
             "ts": 2,
-            "cdrPerSec": 0
+            "cdrPerSec": 1
         },
         {
             "ts": 21.99,
-            "cdrPerSec": 0
+            "cdrPerSec": 1
         },
         {
             "ts": 22,

@@ -45,6 +45,7 @@ object CDRGenerator extends App with SparkConnection with Logger with Applicatio
   logger.info(s"Start ts: $startTs")
 
   var products = Trends.readTrendsFromFile(startTs)
+  logger.info(products.toString)
 
   while (totalBatches < nrOfMaximumBatches || nrOfMaximumBatches == -1) {
 
@@ -57,6 +58,7 @@ object CDRGenerator extends App with SparkConnection with Logger with Applicatio
 
       // Sleep until next event to be generated
       val sleeptime = tsMillis - DateTime.now(DateTimeZone.UTC).getMillis
+      logger.info(products.toString)
       if (sleeptime >= 0) {
         Thread.sleep(sleeptime)
       }
