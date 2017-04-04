@@ -2,7 +2,6 @@ package se.qvantel.generator
 
 import java.io.File
 import scala.io.Source
-
 import de.ummels.prioritymap.PriorityMap
 import org.joda.time.{DateTime, DateTimeZone}
 import org.json4s.native.JsonMethods._
@@ -43,14 +42,13 @@ object Trends extends ApplicationConfig with Logger{
       these ++ f.listFiles.filter(_.isDirectory).flatMap(recursiveListFiles)
     }
 
-    var trendsDirPath = ""
-    if (System.getProperty("trends.dir") != null) {
-      trendsDirPath = System.getProperty("trends.dir")
-      logger.info(s"Loading trends from $trendsDirPath")
+    val trendsDirPath = Option(System.getProperty("trends.dir")) match {
+      case Some(path) => path
+      case None => getClass.getClassLoader.getResource("trends").getPath
     }
-    else {
-      trendsDirPath = getClass.getClassLoader.getResource("trends").getPath
-    }
+
+    logger.info(s"Loading trends from $trendsDirPath")
+
     val files = recursiveListFiles(new File(trendsDirPath))
 
     // Create a priority list out of all products with default timestamp
@@ -62,7 +60,7 @@ object Trends extends ApplicationConfig with Logger{
     PriorityMap(pmap.toList:_*)
   }
 
-  def getNextPrevPoints(points: List[Point], hour: Double): Tuple2[Point, Point] ={
+  def getNextPrevPoints(points: List[Point], hour: Double): (Point, Point) ={
     var trendi = -1
     var trendiPrev = -1
     var found = false
@@ -80,7 +78,7 @@ object Trends extends ApplicationConfig with Logger{
         found = true
       }
     }
-    Tuple2(points(trendiPrev), points(trendi))
+    (points(trendiPrev), points(trendi))
   }
 
   def nextTrendEvent(trend: Product, ts: Long) : Long = {

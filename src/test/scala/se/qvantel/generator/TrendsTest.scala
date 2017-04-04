@@ -10,8 +10,8 @@ class TrendsTest extends FunSuite {
     val prevPoint = Point(6.0, 10.0)
     val nextPoint = Point(18.0, 20.0)
     val points = List(prevPoint, nextPoint)
-    val prevPrev = Tuple2(prevPoint, nextPoint)
-    val prevNext = Tuple2(nextPoint, prevPoint)
+    val prevPrev = (prevPoint, nextPoint)
+    val prevNext = (nextPoint, prevPoint)
 
     assert(prevNext == Trends.getNextPrevPoints(points, 0))
     assert(prevNext == Trends.getNextPrevPoints(points, 1))
