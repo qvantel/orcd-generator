@@ -16,5 +16,5 @@ trait SparkConnection extends CassandraConfig with Logger {
   // Setup cassandra connector
   val connector = CassandraConnector(conf)
   // Create cassandra session
-  val session = connector.openSession()
+  var session = connector.openSession()
 }
