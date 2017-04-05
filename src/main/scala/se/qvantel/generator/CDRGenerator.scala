@@ -84,7 +84,7 @@ object CDRGenerator extends App with SparkConnection
     execBatch match {
       case Success(_) => {
         // Calculate next time this type of event should be generated
-        val nextTs = Trends.nextTrendEvent(product, tsMillis)
+        val nextTs = tsMillis + Trends.nextTrendEventSleep(product, ts)
         products = products + (product -> nextTs)
       }
       case Failure(e) => {

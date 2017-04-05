@@ -60,7 +60,10 @@ object Trends extends ApplicationConfig with Logger{
     PriorityMap(pmap.toList:_*)
   }
 
-  def getNextPrevPoints(points: List[Point], hour: Double): (Point, Point) ={
+  /**
+   *   From a list of points and an hour, return the points prior and after the hour specified
+   */
+  def getNextPrevPoints(points: List[Point], hour: Double): (Point, Point) = {
     var trendi = -1
     var trendiPrev = -1
     var found = false
@@ -81,13 +84,18 @@ object Trends extends ApplicationConfig with Logger{
     (points(trendiPrev), points(trendi))
   }
 
-  def nextTrendEvent(trend: Product, ts: Long) : Long = {
-    var tsDT = new DateTime(ts, DateTimeZone.UTC)
-    val hour = tsDT.minuteOfDay().get().toDouble/60
+  /**
+   * Find out how long we should sleep for when the next cdr event in a specific product trend should be generated
+   */
+  def nextTrendEventSleep(trend: Product, ts: DateTime) : Long = {
+    // Get the hour as a double in the timestamp
+    val hour = ts.minuteOfDay().get().toDouble/60
+    // Find the previous and next trend points
     val prevNextPoints = getNextPrevPoints(trend.points, hour)
     val prevPoint = prevNextPoints._1
     val nextPoint = prevNextPoints._2
 
+    // Calculate the diff between the previous and next points and calculate a fraction of the current hour between the points
     var hourDiffLow = 0.0
     var hourDiffHigh = 0.0
     if (prevPoint.ts < nextPoint.ts) {
@@ -103,26 +111,29 @@ object Trends extends ApplicationConfig with Logger{
       hourDiffLow = hour - prevPoint.ts
     }
     val fraction = hourDiffLow/hourDiffHigh
+    // Using the fraction and the prev/next points cdr/sec, calculate the cdr/sec at this specific timestamp
     val cdrPerSec = (prevPoint.cdrPerSec*(1-fraction)) + (nextPoint.cdrPerSec*fraction)
-
+    // From the cdrPerSec this timestamp, calculate the sleeptime for the next event
     val sleep = (1000/GenerateData.cdrModifier)/cdrPerSec
 
+    var printError = false
+    // If fraction is <0 or >1 something is wrong, print debug message
     if (fraction < 0 || fraction > 1) {
-      val hourPrev = prevPoint.ts
-      val hourNext = nextPoint.ts
       logger.error("Fraction has an invalid value!")
-      logger.error(s"\tHour: $hour = $hourPrev -> $hourNext")
-      logger.error(s"\tFraction: $hourDiffLow / $hourDiffHigh = $fraction")
-      logger.error(s"\tSleep: $sleep")
+      printError = true
     }
+    // If sleep is <0 something is wrong, print debug message
     else if (sleep < 0) {
+      logger.error("Sleep is less than 0!")
+      printError = true
+    }
+    if (printError){
       val hourPrev = prevPoint.ts
       val hourNext = nextPoint.ts
-      logger.error("Sleep is less than 0!")
       logger.error(s"\tHour: $hour = $hourPrev -> $hourNext")
       logger.error(s"\tFraction: $hourDiffLow / $hourDiffHigh = $fraction")
       logger.error(s"\tSleep: $sleep")
     }
-    (ts + sleep).toLong
+    sleep.toLong
   }
 }
