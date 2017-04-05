@@ -23,14 +23,19 @@ object CDRGenerator extends App with SparkConnection
 
   def getLastSync(): DateTime = {
     val cdrRdd = context.cassandraTable(keyspace, cdrTable)
+    // If sudden crash, look into the last inserted record and begin generating from that timestamp
     val rows = cdrRdd.select("created_at")
       .where("clustering_key=0")
       .clusteringOrder(rdd.ClusteringOrder.Descending)
-      .limit(1).collect()
+      .limit(1)
+      .collect()
+
+    // If there is no records in the cassandra database, the time to start the generator is now.
     if (rows.length < 1) {
       new DateTime(0, DateTimeZone.UTC)
     }
     else {
+      // Otherwise, get the latest record and generate from that timestamp to now.
       val lastSyncNs = rows.apply(0).getLong(0)
       new DateTime(lastSyncNs / 1000, DateTimeZone.UTC)
     }
@@ -53,6 +58,7 @@ object CDRGenerator extends App with SparkConnection
     val nextEntry = products.head
     val product = nextEntry._1
     val tsMillis = nextEntry._2
+    // Convert epoch timestamp from milli seconds to nano seconds
     val tsNanos = tsMillis*1000 + (Random.nextInt()%1000)
     val ts = new DateTime(tsMillis, DateTimeZone.UTC)
 
