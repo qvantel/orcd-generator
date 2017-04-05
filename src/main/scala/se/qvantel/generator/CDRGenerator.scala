@@ -6,8 +6,7 @@ import se.qvantel.generator.model.EDR
 import com.datastax.spark.connector._
 import se.qvantel.generator.utils.property.config.{ApplicationConfig, CassandraConfig}
 import utils.Logger
-
-import scala.util.{Failure, Random, Success, Try}
+import scala.util.{Failure, Success, Try}
 
 
 object CDRGenerator extends App with SparkConnection
@@ -34,17 +33,21 @@ object CDRGenerator extends App with SparkConnection
       .collect()
 
     // By default set startTs to backInTimeTs
-    var startTs = backInTimeTs
     // If events exists in cassandra and last event is newer than backInTimeTs, start at lastEventTs
     // This is done in case for example the CDR Generator crashes or is shut down it will continue where it stopped
-    if (rows.length > 0) {
-      val lastEventTs = new DateTime(rows.apply(0).getLong(0)/1000, DateTimeZone.UTC)
-      logger.info(s"BackInTimeTs: $backInTimeTs")
-      logger.info(s"LastEventTs: $lastEventTs")
-      if (lastEventTs.getMillis > backInTimeTs.getMillis) {
-        startTs = lastEventTs
+    val startTs = (rows.length > 0) match {
+      case true => {
+        val lastEventTs = new DateTime(rows.apply(0).getLong(0)/1000, DateTimeZone.UTC)
+        logger.info(s"BackInTimeTs: $backInTimeTs")
+        logger.info(s"LastEventTs: $lastEventTs")
+        lastEventTs.getMillis > backInTimeTs.getMillis match {
+          case true => lastEventTs
+          case false => backInTimeTs
+        }
       }
+      case false => backInTimeTs
     }
+
     startTs
   }
 
