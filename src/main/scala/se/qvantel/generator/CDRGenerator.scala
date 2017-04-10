@@ -62,11 +62,6 @@ object CDRGenerator extends App with SparkConnection
     if (sleeptime >= 0) {
       Thread.sleep(sleeptime)
     }
-
-    // Debug print
-    val productname = product.name
-    //logger.info(s"$ts - $productname")
-
     // Generate and send CDR
     val execBatch = Try {
       // Convert epoch timestamp from milli seconds to micro seconds
