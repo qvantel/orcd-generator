@@ -2,11 +2,11 @@ package se.qvantel.generator
 
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.{EventType, Service, TrafficCase, UnitOfMeasure}
-import se.qvantel.generator.utils.property.config.{CallConfig, DataConfig}
+import se.qvantel.generator.utils.property.config.CallConfig
 
 import scala.util.Random
 
-object GenerateData extends CallConfig with DataConfig {
+object GenerateData extends CallConfig {
 
   private val mccMap = getAvailableMccCodesByCountry()
 
@@ -29,8 +29,6 @@ object GenerateData extends CallConfig with DataConfig {
       .mkString
   }
 
-  def sleepTime(): Long = Math.abs(if(maxSleep>0)Random.nextLong()%maxSleep else 0)
-
   def amount(): Int = Random.nextInt(Integer.MAX_VALUE)%amountMax
 
   def timeStamp(): DateTime = DateTime.now(DateTimeZone.UTC)
@@ -46,6 +44,4 @@ object GenerateData extends CallConfig with DataConfig {
   def service(): String = Service(Random.nextInt(Service.maxId)).toString
 
   def unitOfMeasure(): String = UnitOfMeasure(Random.nextInt(UnitOfMeasure.maxId)).toString
-
-  def product(): String = products(Random.nextInt(products.length))
 }

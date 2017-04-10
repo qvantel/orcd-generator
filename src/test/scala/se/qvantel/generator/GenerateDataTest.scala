@@ -1,13 +1,8 @@
 package se.qvantel.generator
 
 import org.scalatest.FunSuite
-import se.qvantel.generator.utils.property.config.DataConfig
 
-class GenerateDataTest extends FunSuite with DataConfig {
-
-  test("Product is generated") {
-    assert(GenerateData.product().nonEmpty)
-  }
+class GenerateDataTest extends FunSuite {
 
   test("Destination is generated") {
     assert(GenerateData.destination().contains("000FFFFFF"))
