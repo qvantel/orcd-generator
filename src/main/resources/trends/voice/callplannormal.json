@@ -6,11 +6,11 @@
     "endHour" : null,
     "points" : [
         {
-            "ts": 4,
+            "trendHour": 4,
             "cdrPerSec": 1000
         },
         {
-            "ts": 12,
+            "trendHour": 12,
             "cdrPerSec": 5000
         }
     ]

@@ -4,19 +4,19 @@
     "campaignId": "a3f12ea",
     "points" : [
         {
-            "ts": 4,
+            "trendHour": 4,
             "cdrPerSec": 20
         },
         {
-            "ts": 12,
+            "trendHour": 12,
             "cdrPerSec": 340
         },
         {
-            "ts": 18,
+            "trendHour": 18,
             "cdrPerSec": 220
         },
         {
-            "ts": 22,
+            "trendHour": 22,
             "cdrPerSec": 700
         }
     ]

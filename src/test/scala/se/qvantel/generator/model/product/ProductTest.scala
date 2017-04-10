@@ -27,9 +27,9 @@ class ProductTest extends FunSuite {
 
     assert(parsedProduct.campaignId.equals("a3f12ea"))
     assert(parsedProduct.points.length == 4)
-    assert(parsedProduct.points.head.ts == 4)
+    assert(parsedProduct.points.head.trendHour == 4)
     assert(parsedProduct.points.head.cdrPerSec == 20)
-    assert(parsedProduct.points(1).ts == 12)
+    assert(parsedProduct.points(1).trendHour == 12)
     assert(parsedProduct.points(1).cdrPerSec == 340)
   }
 

@@ -4,23 +4,23 @@
     "campaignId" : "1",
     "points" : [
         {
-            "ts": 0,
+            "trendHour": 0,
             "cdrPerSec": 50
         },
         {
-            "ts": 2,
+            "trendHour": 2,
             "cdrPerSec": 1
         },
         {
-            "ts": 21.99,
+            "trendHour": 21.99,
             "cdrPerSec": 1
         },
         {
-            "ts": 22,
+            "trendHour": 22,
             "cdrPerSec": 200
         },
         {
-            "ts": 23,
+            "trendHour": 23,
             "cdrPerSec": 300
         }
     ]
