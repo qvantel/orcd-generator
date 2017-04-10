@@ -64,7 +64,7 @@ object CDRGenerator extends App with SparkConnection
 
     // Debug print
     val productname = product.name
-    logger.info(s"$ts - $productname")
+    //logger.info(s"$ts - $productname")
 
     // Generate and send CDR
     val execBatch = Try {
