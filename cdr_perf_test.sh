@@ -49,31 +49,22 @@ CQLSH="docker exec -i "$cassandra_name" cqlsh"
 CQLSH="cqlsh --cqlversion=3.4.2"
 
 function count_cdr() {
-    # Set start and end time
-    start_date=$(date --iso-8601=s --date "$start_time_relative seconds")
-    end_date=$(date --iso-8601=s --date "$end_time_relative seconds")
-    echo "Counting between $start_date and $end_date"
+    QUERY_LAST="SELECT created_at FROM qvantel.cdr WHERE clustering_key=0 ORDER BY created_at DESC LIMIT 1;"
+    last_ts=$($CQLSH -e "$QUERY_LAST" | head -n 4 | tail -n 1 | tr -d ' ')
 
-    QUERY_TOTAL="SELECT count(id) FROM qvantel.cdr;"
-
-    echo "Counting 1"
-    count_pre=$($CQLSH -e "$QUERY_TOTAL" | head -n 4 | tail -n 1 | tr -d ' ')
-    echo "Sleeping"
+    echo 'Sleeping '$interval's'
     sleep $interval
-    echo "Counting 2"
-    count_post=$($CQLSH -e "$QUERY_TOTAL" | head -n 4 | tail -n 1 | tr -d ' ')
+    
+    QUERY_DIFF="SELECT count(id) FROM qvantel.cdr WHERE created_at > $last_ts ALLOW FILTERING;"
+    count=$($CQLSH -e "$QUERY_DIFF" | head -n 4 | tail -n 1 | tr -d ' ')
 
     # If fetch fails (isn't a number), set number to 0
-    [ -n "${count_pre##*[!0-9]*}"  ] || count_pre=0
-    [ -n "${count_post##*[!0-9]*}" ] || count_post=0
+    [ -n "${count##*[!0-9]*}"  ] || count=0
 
-    echo $count_pre
-    echo $count_post
-    count=$(( $count_post - $count_pre ))
     throughput=$(( $count / $interval ))
 
     # Print results
-    echo "$throughput cdr/s ($count_post cdr records in the database)"
+    echo "$throughput cdr/s (fetched $count events in $interval seconds)"
 
     # Report to graphite
     if [ "$report_to_graphite" -ne 0 ]; then
