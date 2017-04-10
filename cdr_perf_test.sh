@@ -6,7 +6,12 @@ graphite_port=2003
 interval=10
 loop=0
 report_to_graphite=0
-cassandra_name="cassandra_qvantel"
+cassandra_container_name="cassandra_qvantel"
+cassandra_cdrtable="qvantel.cdr"
+
+CQLSH="docker exec -i "$cassandra_container_name" cqlsh"
+#CQLSH="cqlsh --cqlversion=3.4.2"
+
 
 USAGE="$0 [-s 0-9|-l 0-9|-g]"
 
@@ -45,17 +50,14 @@ done
 start_time_relative=$(( -10 - $interval ))
 end_time_relative=$(( 0 - $interval ))
 
-CQLSH="docker exec -i "$cassandra_name" cqlsh"
-#CQLSH="cqlsh --cqlversion=3.4.2"
-
 function count_cdr() {
-    QUERY_LAST="SELECT created_at FROM qvantel.cdr WHERE clustering_key=0 ORDER BY created_at DESC LIMIT 1;"
+    QUERY_LAST="SELECT created_at FROM $cassandra_cdrtable WHERE clustering_key=0 ORDER BY created_at DESC LIMIT 1;"
     last_ts=$($CQLSH -e "$QUERY_LAST" | head -n 4 | tail -n 1 | tr -d ' ')
 
     echo 'Sleeping '$interval's'
     sleep $interval
     
-    QUERY_DIFF="SELECT count(id) FROM qvantel.cdr WHERE created_at > $last_ts ALLOW FILTERING;"
+    QUERY_DIFF="SELECT count(id) FROM $cassandra_cdrtable WHERE created_at > $last_ts ALLOW FILTERING;"
     count=$($CQLSH -e "$QUERY_DIFF" | head -n 4 | tail -n 1 | tr -d ' ')
 
     # If fetch fails (isn't a number), set number to 0
