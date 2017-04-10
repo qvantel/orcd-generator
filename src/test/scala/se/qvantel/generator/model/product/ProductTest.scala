@@ -1,7 +1,6 @@
 package se.qvantel.generator.model.product
 
 import java.io.InputStream
-
 import org.json4s.DefaultFormats
 import org.json4s.native.JsonMethods._
 import org.scalatest.FunSuite
