@@ -1,6 +1,5 @@
 package se.qvantel.generator.model
 
-import org.joda.time.DateTime
 import se.qvantel.generator.model.product.Product
 import se.qvantel.generator.GenerateData
 

@@ -3,7 +3,6 @@ package se.qvantel.generator
 import com.datastax.driver.core.{BatchStatement, SimpleStatement}
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.EDR
-import com.datastax.spark.connector._
 import se.qvantel.generator.utils.property.config.{ApplicationConfig, CassandraConfig}
 import utils.Logger
 import scala.util.{Failure, Success, Try}

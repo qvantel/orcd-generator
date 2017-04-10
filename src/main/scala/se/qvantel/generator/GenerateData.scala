@@ -8,7 +8,6 @@ import scala.util.Random
 
 object GenerateData extends CallConfig with DataConfig {
 
-
   val mccList = getAvailableMccCodes()
 
   private def mcc(): String = {

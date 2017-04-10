@@ -1,7 +1,6 @@
 package se.qvantel.generator
 
 import java.io.File
-import scala.io.Source
 import de.ummels.prioritymap.PriorityMap
 import org.joda.time.{DateTime, DateTimeZone}
 import org.json4s.native.JsonMethods._
@@ -9,7 +8,6 @@ import org.json4s.DefaultFormats
 import se.qvantel.generator.model.product.{Product, Point}
 import se.qvantel.generator.utils.Logger
 import se.qvantel.generator.utils.property.config.ApplicationConfig
-
 import scala.collection.mutable
 import scala.io.Source
 
