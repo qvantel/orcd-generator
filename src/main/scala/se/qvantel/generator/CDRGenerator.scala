@@ -3,7 +3,6 @@ package se.qvantel.generator
 import com.datastax.driver.core.{BatchStatement, SimpleStatement}
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.EDR
-import com.datastax.spark.connector._
 import se.qvantel.generator.utils.property.config.{ApplicationConfig, CassandraConfig}
 import utils.Logger
 import scala.util.{Failure, Success, Try}
@@ -67,7 +66,7 @@ object CDRGenerator extends App with SparkConnection
 
     // Debug print
     val productname = product.name
-    logger.info(s"$ts - $productname")
+    //logger.info(s"$ts - $productname")
 
     // Generate and send CDR
     val execBatch = Try {
