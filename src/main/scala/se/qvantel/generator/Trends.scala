@@ -68,27 +68,6 @@ object Trends extends ApplicationConfig with Logger{
       case Some(tailPoint) => (tailPoint, points.find(p => p.ts >= hour).getOrElse(points(0)))
       case None => (points(points.length - 1), points(0))
     }
-    /*
-    var trendi = -1
-    var trendiPrev = -1
-    var found = false
-
-    while (!found){
-      trendi += 1
-      if (trendi == 0){ trendiPrev = points.length-1 }
-      else { trendiPrev = trendi-1 }
-
-      if (trendi == points.length){
-        trendi = 0
-        trendiPrev = points.length-1
-        found = true
-      }
-      else if (points(trendi).ts >= hour) {
-        found = true
-      }
-    }
-    (points(trendiPrev), points(trendi))
-    */
   }
 
   /**
