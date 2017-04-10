@@ -15,8 +15,8 @@ object EDR {
   val apn_location_area_identification = ""
   val apn_cell_global_identification = ""
   val currency = ""
-  val prid = ""
-  var prName = ""
+  val productId = ""
+  var productName = ""
   val caid = ""
   val caname = ""
   var service  = ""
@@ -28,7 +28,7 @@ object EDR {
 
   def generateRecord(product: Product, tsNanos: Long): String = {
     service = product.serviceType
-    prName = product.name
+    productName = product.name
     timestamp = tsNanos
     service match {
       case "voice" => generateVoiceRecord()
@@ -60,7 +60,7 @@ object EDR {
       s"location_area_identification: '$bpn_location_area_identification', " +
       s"cell_global_identification: '$bpn_cell_global_identification'}}, " +
       s"{charged_units: {amount: $amount, unit_of_measure: '$unitOfMeasure', currency: '$currency'}," + //charged units
-      s"product: {id: '$prid', name: '$prName'}," + //product
+      s"product: {id: '$productId', name: '$productName'}," + //product
       s"charged_amounts: {{id: '$caid', name: '$caname', charged_type: '$cactype', event_type: '$caetype'," + //charged amounts
       s"resource_type: '$cartype', amount: $amount, end_balance: $endBalance, expiry_date: '$expiry_date'}}" +
       s"});" // end of cassandra statement
@@ -81,7 +81,7 @@ object EDR {
       s"location_area_identification: '$apn_location_area_identification', " +
       s"cell_global_identification: '$apn_cell_global_identification'}}, " +
       s"{charged_units: {amount: $amount, unit_of_measure: '$unitOfMeasure', currency: '$currency'}," + //charged units
-      s"product: {id: '$prid', name: '$prName'}," + //product
+      s"product: {id: '$productId', name: '$productName'}," + //product
       s"charged_amounts: {{id: '$caid', name: '$caname', charged_type: '$cactype', event_type: '$caetype'," + //charged amounts
       s"resource_type: '$cartype', amount: $amount, end_balance: $endBalance, expiry_date: '$expiry_date'}}" +
       s"});" // end of cassandra statement
