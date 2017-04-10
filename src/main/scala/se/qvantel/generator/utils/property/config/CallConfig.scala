@@ -1,7 +1,6 @@
 package se.qvantel.generator.utils.property.config
 
 import java.io.InputStream
-
 import org.json4s.{DefaultFormats, _}
 import org.json4s.native.JsonMethods._
 import se.qvantel.generator.model.Country
@@ -34,7 +33,6 @@ trait CallConfig extends ApplicationConfig {
 
       // Close source file
       source.close()
-
 
       // Take the Country.mcc and make it's own list with only the distinct values
       countriesList.filter(_.iso != "n/a")

@@ -7,7 +7,6 @@ import se.qvantel.generator.utils.property.config.{ApplicationConfig, CassandraC
 import utils.Logger
 import scala.util.{Failure, Success, Try}
 
-
 object CDRGenerator extends App with SparkConnection
   with Logger with CassandraConfig with ApplicationConfig {
   // Prepare batch
