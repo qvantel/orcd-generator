@@ -9,6 +9,7 @@ import scala.util.Random
 object GenerateData extends CallConfig with DataConfig {
 
   val mccList = getAvailableMccCodes()
+  val getBackInTime = backInTimeHours
 
   private def mcc(): String = {
     val int = Random.nextInt(mccList.length)
@@ -28,8 +29,6 @@ object GenerateData extends CallConfig with DataConfig {
 
     randomStr
   }
-
-  def getBackInTime(): Int = backInTimeHours
 
   def sleepTime(): Long = Math.abs(if(maxSleep>0)Random.nextLong()%maxSleep else 0)
 

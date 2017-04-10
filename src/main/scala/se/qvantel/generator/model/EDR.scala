@@ -38,11 +38,10 @@ object EDR {
 
   private def generateVoiceRecord(): String = {
     // Call specific generation variables
-    def trafficCase: String = GenerateData.trafficCase()
-    def eventType: String = GenerateData.eventType()
-    def bPartyNumber: String = GenerateData.msisdn()
-    def bpnDestination: String = GenerateData.destination()
-    // Move to method if it is non static
+    val trafficCase = GenerateData.trafficCase()
+    val eventType = GenerateData.eventType()
+    val bPartyNumber = GenerateData.msisdn()
+    val bpnDestination = GenerateData.destination()
     val bpn_location_number = ""
     val bpn_location_area_identification = ""
     val bpn_cell_global_identification = ""
