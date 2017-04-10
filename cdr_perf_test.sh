@@ -46,7 +46,7 @@ start_time_relative=$(( -10 - $interval ))
 end_time_relative=$(( 0 - $interval ))
 
 CQLSH="docker exec -i "$cassandra_name" cqlsh"
-CQLSH="cqlsh --cqlversion=3.4.2"
+#CQLSH="cqlsh --cqlversion=3.4.2"
 
 function count_cdr() {
     QUERY_LAST="SELECT created_at FROM qvantel.cdr WHERE clustering_key=0 ORDER BY created_at DESC LIMIT 1;"
@@ -69,16 +69,13 @@ function count_cdr() {
     # Report to graphite
     if [ "$report_to_graphite" -ne 0 ]; then
         timestamp=$(date +%s)
-
         echo "qvantel.cdrgenerator.throughput $throughput $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
-        echo "qvantel.cdrgenerator.entries $count_total $timestamp" | timeout 1 nc $graphite_host $graphite_port &> /dev/null
     fi
 }
 
 
 if [ "$loop" -gt 0 ]; then
     interval=$loop
-    echo "Loop interval: $loop"
     while [ true ] ; do
         target_time=$(date -d "$loop seconds" +%s)
         count_cdr
@@ -88,6 +85,5 @@ if [ "$loop" -gt 0 ]; then
         sleep $sleep_time
     done
 else
-    echo "Interval: $interval"
     count_cdr
 fi
