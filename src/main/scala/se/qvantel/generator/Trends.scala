@@ -1,7 +1,6 @@
 package se.qvantel.generator
 
 import java.io.File
-import scala.io.Source
 import de.ummels.prioritymap.PriorityMap
 import org.joda.time.{DateTime, DateTimeZone}
 import org.json4s.native.JsonMethods._
@@ -9,7 +8,6 @@ import org.json4s.DefaultFormats
 import se.qvantel.generator.model.product.{Product, Point}
 import se.qvantel.generator.utils.Logger
 import se.qvantel.generator.utils.property.config.ApplicationConfig
-
 import scala.collection.mutable
 import scala.io.Source
 
@@ -64,9 +62,15 @@ object Trends extends ApplicationConfig with Logger{
    *   From a list of points and an hour, return the points prior and after the hour specified
    */
   def getNextPrevPoints(points: List[Point], hour: Double): (Point, Point) = {
+    points.reverse.dropWhile(p => p.ts >= hour).headOption match {
+      case Some(tailPoint) => (tailPoint, points.find(p => p.ts >= hour).getOrElse(points(0)))
+      case None => (points(points.length - 1), points(0))
+    }
+    /*
     var trendi = -1
     var trendiPrev = -1
     var found = false
+
     while (!found){
       trendi += 1
       if (trendi == 0){ trendiPrev = points.length-1 }
@@ -82,6 +86,7 @@ object Trends extends ApplicationConfig with Logger{
       }
     }
     (points(trendiPrev), points(trendi))
+    */
   }
 
   /**
