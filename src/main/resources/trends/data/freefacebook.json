@@ -1,0 +1,31 @@
+{
+    "name": "Free Facebook",
+    "serviceType" : "data",
+    "campaignId" : "3",
+    "points" : [
+        {
+            "trendHour": 4,
+            "cdrPerSec": 50
+        },
+        {
+            "trendHour": 12,
+            "cdrPerSec": 300
+        },
+        {
+            "trendHour": 13,
+            "cdrPerSec": 150
+        },
+        {
+            "trendHour": 16,
+            "cdrPerSec": 200
+        },
+        {
+            "trendHour": 18,
+            "cdrPerSec": 400
+        },
+        {
+            "trendHour": 23,
+            "cdrPerSec": 150
+        }
+    ]
+}

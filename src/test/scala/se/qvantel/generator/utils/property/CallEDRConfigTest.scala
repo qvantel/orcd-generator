@@ -3,8 +3,9 @@ package se.qvantel.generator.utils.property
 import java.io.InputStream
 
 import org.scalatest.FunSuite
+import se.qvantel.generator.utils.property.config.Config
 
-class CallConfigTest extends FunSuite with Config {
+class CallEDRConfigTest extends FunSuite with Config {
 
   test("Check that there is a mcc-resources file") {
     try {

@@ -1,0 +1,31 @@
+{
+    "name": "Champions League Final",
+    "serviceType": "data",
+    "campaignId" : "2",
+    "points" : [
+        {
+            "trendHour": 20.99,
+            "cdrPerSec": 1
+        },
+        {
+            "trendHour": 21,
+            "cdrPerSec": 300
+        },
+        {
+            "trendHour": 22,
+            "cdrPerSec": 500
+        },
+        {
+            "trendHour": 23,
+            "cdrPerSec": 500
+        },
+        {
+            "trendHour": 23.5,
+            "cdrPerSec": 100
+        },
+        {
+            "trendHour": 24,
+            "cdrPerSec": 1
+        }
+    ]
+}

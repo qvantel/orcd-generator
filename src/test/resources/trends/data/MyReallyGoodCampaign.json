@@ -1,0 +1,23 @@
+{
+    "name": "Very good campaign, many use",
+    "serviceType": "data",
+    "campaignId": "a3f12ea",
+    "points" : [
+        {
+            "trendHour": 4,
+            "cdrPerSec": 20
+        },
+        {
+            "trendHour": 12,
+            "cdrPerSec": 340
+        },
+        {
+            "trendHour": 18,
+            "cdrPerSec": 220
+        },
+        {
+            "trendHour": 22,
+            "cdrPerSec": 700
+        }
+    ]
+}

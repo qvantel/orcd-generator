@@ -1,0 +1,27 @@
+{
+    "name": "Cheap Calls After 22:00",
+    "serviceType": "voice",
+    "campaignId" : "1",
+    "points" : [
+        {
+            "trendHour": 0,
+            "cdrPerSec": 50
+        },
+        {
+            "trendHour": 2,
+            "cdrPerSec": 1
+        },
+        {
+            "trendHour": 21.99,
+            "cdrPerSec": 1
+        },
+        {
+            "trendHour": 22,
+            "cdrPerSec": 200
+        },
+        {
+            "trendHour": 23,
+            "cdrPerSec": 300
+        }
+    ]
+}

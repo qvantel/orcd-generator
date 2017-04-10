@@ -1,0 +1,17 @@
+{
+    "name" : "Call Plan Normal",
+    "serviceType": "voice",
+    "campaignId" : null,
+    "startHour" : null,
+    "endHour" : null,
+    "points" : [
+        {
+            "trendHour": 4,
+            "cdrPerSec": 1000
+        },
+        {
+            "trendHour": 12,
+            "cdrPerSec": 5000
+        }
+    ]
+}

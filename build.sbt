@@ -22,12 +22,14 @@ compile in Compile <<= (compile in Compile).dependsOn(execScript)
 resolvers += "Spark Packages Repo" at "https://dl.bintray.com/spark-packages/maven"
 
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % "2.1.0" % "compile",
-  "org.apache.spark" %% "spark-sql" % "2.1.0" % "compile",
-  "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.0-M3",
+  "org.apache.spark" %% "spark-core" % "2.0.2" % "compile",
+  "org.apache.spark" %% "spark-sql" % "2.0.2" % "compile",
+  "com.datastax.spark" %% "spark-cassandra-connector" % "2.0.1",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "com.typesafe" % "config" % "1.3.1",
-  "org.json4s" %% "json4s-native" % "3.5.0")
+  "org.json4s" %% "json4s-native" % "3.5.0",
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
+  "de.ummels" %% "scala-prioritymap" % "1.0.0")
 
 // This part is required for spark to assemble
 // Why? I don't know, but it works

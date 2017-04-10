@@ -1,4 +1,4 @@
-package se.qvantel.generator.utils.property
+package se.qvantel.generator.utils.property.config
 
 trait ApplicationConfig extends Config {
 
@@ -11,9 +11,12 @@ trait ApplicationConfig extends Config {
   // The limit of amount to generate(0-max)
   val amountMax = config.getInt("gen.cassandra.element.amount.max")
 
-  // The max amount of time the thread can sleep
-  val maxSleep = config.getInt("gen.thread.max.sleeptime")
-
   // Number of batchSizes until the program is ready to exit. -1 for infinity
   val nrOfMaximumBatches = config.getInt("gen.batch.limit")
+
+  // Scale up or scale down the amount of cdrs generated (1 for realistic values)
+  val cdrModifier = config.getDouble("gen.modifier")
+
+  // Total amount of hours to generate back in time
+  val backInTimeHours = config.getInt("gen.backintime")
 }

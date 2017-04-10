@@ -2,10 +2,9 @@ package se.qvantel.generator
 
 import com.datastax.spark.connector.cql.CassandraConnector
 import org.apache.spark.{SparkConf, SparkContext}
-import se.qvantel.generator.utils.Logger
-import se.qvantel.generator.utils.property.CassandraConfig
+import se.qvantel.generator.utils.property.config.CassandraConfig
 
-trait SparkConnection extends CassandraConfig with Logger {
+trait SparkConnection extends CassandraConfig {
   // Configure spark->cassandra connection
   val conf = new SparkConf(true)
     .set("spark.cassandra.connection.host", ip)
@@ -16,5 +15,5 @@ trait SparkConnection extends CassandraConfig with Logger {
   // Setup cassandra connector
   val connector = CassandraConnector(conf)
   // Create cassandra session
-  val session = connector.openSession()
+  var session = connector.openSession()
 }
