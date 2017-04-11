@@ -12,10 +12,12 @@ import scala.util.{Failure, Success, Try}
 object CDRGenerator extends App with SparkConnection
   with Logger with CassandraConfig with ApplicationConfig {
   // Start Kamon
-  Try(Kamon.start()) match{
+  Try(Kamon.start()) match {
     case Success(_) => logger.info("Kamon started sucessfully")
-    case Failure(e) => e.printStackTrace()
+    case Failure(e) => {
+      e.printStackTrace()
       System.exit(0)
+    }
   }
   // Kamon metrics
   val cdrCounter = Kamon.metrics.counter("cdrs-generated")
