@@ -1,14 +1,20 @@
 package se.qvantel.generator
 
 import com.datastax.driver.core.{BatchStatement, SimpleStatement}
+import kamon.Kamon
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.EDR
 import se.qvantel.generator.utils.property.config.{ApplicationConfig, CassandraConfig}
 import utils.Logger
+
 import scala.util.{Failure, Success, Try}
 
 object CDRGenerator extends App with SparkConnection
   with Logger with CassandraConfig with ApplicationConfig {
+  // Start Kamon
+  Kamon.start()
+  val cdrCounter = Kamon.metrics.counter("cdrs-generated")
+
   // Prepare batch
   val batch = new BatchStatement()
   var count = 1
@@ -77,6 +83,7 @@ object CDRGenerator extends App with SparkConnection
         totalBatches += 1
       }
       count += 1
+      cdrCounter.increment()
     }
 
     execBatch match {
@@ -101,8 +108,9 @@ object CDRGenerator extends App with SparkConnection
   }
 
   logger.info("Closing connection")
-  // Close cassandra session
+  // Close kamon and cassandra session
   session.close()
+  Kamon.shutdown()
   logger.info("Closing program")
 }
 
