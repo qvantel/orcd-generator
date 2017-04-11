@@ -3,7 +3,7 @@ package se.qvantel.generator.utils
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.CDRGenerator._
 
-object TimeManager {
+object LastCdrChecker {
   def getStartTime(): DateTime = {
     val backInTimeTs = DateTime.now(DateTimeZone.UTC).minusHours(backInTimeHours)
     // If sudden crash, look into the last inserted record and begin generating from that timestamp
