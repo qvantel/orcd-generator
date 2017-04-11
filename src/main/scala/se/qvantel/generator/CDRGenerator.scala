@@ -6,7 +6,6 @@ import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.EDR
 import se.qvantel.generator.utils.property.config.{ApplicationConfig, CassandraConfig}
 import utils.Logger
-
 import scala.util.{Failure, Success, Try}
 
 object CDRGenerator extends App with SparkConnection
