@@ -9,19 +9,19 @@
         },
         {
             "trendHour": 21,
-            "cdrPerSec": 300
+            "cdrPerSec": 500
         },
         {
             "trendHour": 22,
-            "cdrPerSec": 500
+            "cdrPerSec": 700
         },
         {
             "trendHour": 23,
-            "cdrPerSec": 500
+            "cdrPerSec": 700
         },
         {
             "trendHour": 23.5,
-            "cdrPerSec": 100
+            "cdrPerSec": 150
         },
         {
             "trendHour": 24,
