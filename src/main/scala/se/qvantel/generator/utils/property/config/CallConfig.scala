@@ -15,31 +15,35 @@ trait CallConfig extends ApplicationConfig {
     * It will then parse the JSON into the model.Country model, with the properties as described.
     * @return List[Int]
     */
-  def getAvailableMccCodes(): List[Int] = {
-      // Open a source file
-      val res = config.getString("gen.countries.file")
+  def getAvailableMccCodesByCountry(): Map[String, Array[Int]] = {
+    // Open a source file
+    val res = config.getString("gen.countries.file")
 
-      // Open a resource from the res variable. We use a resource since it can be a jar-context.
-      val source : InputStream = getClass.getResourceAsStream(res)
+    // Open a resource from the res variable. We use a resource since it can be a jar-context.
+    val source : InputStream = getClass.getResourceAsStream(res)
 
-      // Finally, read the actuals contents into a string.
-      val lines = scala.io.Source.fromInputStream( source ).mkString
+    // Finally, read the actuals contents into a string.
+    val lines = scala.io.Source.fromInputStream( source ).mkString
 
-      // For json4s, specify parse format
-      implicit val format = DefaultFormats
+    // For json4s, specify parse format
+    implicit val format = DefaultFormats
 
-      // Parse the contents, extract to a list of countries
-      val countriesList = parse(lines.toString()).extract[List[Country]]
+    // Parse the contents, extract to a list of countries
+    val countriesList = parse(lines.toString()).extract[List[Country]].filter(_.iso != "n/a")
 
-      // Close source file
-      source.close()
+    // Close source file
+    source.close()
 
-      // Take the Country.mcc and make it's own list with only the distinct values
-      countriesList.filter(_.iso != "n/a")
+    // Take the Country.mcc and make it's own list with only the distinct values
+    countriesList.map(c =>
+      c.country_code ->
+      countriesList
+        .filter(_.country_code == c.country_code)
         .map(c => c.mcc.toInt)
         .distinct
-    }
-
+        .toArray
+    ).toMap
   }
+}
 
 

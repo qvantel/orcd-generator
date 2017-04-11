@@ -43,7 +43,6 @@ class TrendsTest extends FunSuite {
     val points = List(prevPoint, nextPoint)
     val product = Product("a", "b", "c", points)
 
-
     var currentTime = "00:00:00"
     var ts = DateTime.parse(s"1970-01-01T$currentTime+00:00")
     var fraction = 6.0/12.0

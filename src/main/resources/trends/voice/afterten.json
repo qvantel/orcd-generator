@@ -4,8 +4,8 @@
     "campaignId" : "1",
     "points" : [
         {
-            "trendHour": 0,
-            "cdrPerSec": 50
+            "trendHour": 1,
+            "cdrPerSec": 100
         },
         {
             "trendHour": 2,
@@ -17,11 +17,11 @@
         },
         {
             "trendHour": 22,
-            "cdrPerSec": 200
+            "cdrPerSec": 400
         },
         {
             "trendHour": 23,
-            "cdrPerSec": 300
+            "cdrPerSec": 500
         }
     ]
 }
