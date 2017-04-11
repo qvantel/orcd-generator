@@ -1,15 +1,18 @@
 package se.qvantel.generator
 
 import java.io.File
+
 import de.ummels.prioritymap.PriorityMap
 import org.joda.time.DateTime
 import org.json4s.native.JsonMethods._
 import org.json4s.DefaultFormats
-import se.qvantel.generator.model.product.{Product, Point}
+import se.qvantel.generator.model.product.{Point, Product}
 import se.qvantel.generator.utils.Logger
 import se.qvantel.generator.utils.property.config.ApplicationConfig
+
 import scala.collection.mutable
 import scala.io.Source
+import scala.util.Random
 
 
 object Trends extends ApplicationConfig with Logger {
@@ -33,7 +36,7 @@ object Trends extends ApplicationConfig with Logger {
     plan
   }
 
-  def readTrendsFromFile (startTs: DateTime) : PriorityMap[Product, Long] = {
+  def readTrendsFromFile(startTs: DateTime) : PriorityMap[Product, Long] = {
     // List all config files in resources/trends
     def recursiveListFiles(f: File): Array[File] = {
       val these = f.listFiles.filter(_.isFile)
@@ -52,7 +55,9 @@ object Trends extends ApplicationConfig with Logger {
     // Create a priority list out of all products with default timestamp
     var pmap = mutable.HashMap.empty[Product, Long]
     files.foreach(f => pmap.put(parseTrendFromFile(f.toString), startTs.getMillis))
-    val pmaplist = pmap.toList
+
+    // Modify the points increase/decrease 10 percent
+    pmap.foreach(prod => prod._1.points.foreach(p => p.copy(trendHour = p.trendHour, cdrPerSec = (Random.nextFloat()*0.2-0.1 + p.cdrPerSec))))
 
     // Return priority map
     PriorityMap(pmap.toList:_*)
