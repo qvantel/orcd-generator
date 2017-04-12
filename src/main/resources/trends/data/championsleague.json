@@ -27,5 +27,31 @@
             "trendHour": 24,
             "cdrPerSec": 1
         }
+    ],
+    "countries" : [
+        {
+            "country" : "default",
+            "modifier" : 1
+        },
+        {
+            "country" : "de",
+            "modifier" : 2.2
+        },
+        {
+            "country" : "es",
+            "modifier" : 1.9
+        },
+        {
+            "country" : "gb",
+            "modifier" : 1.7
+        },
+        {
+            "country" : "br",
+            "modifier" : 1.6
+        },
+        {
+            "country" : "it",
+            "modifier" : 2
+        }
     ]
 }

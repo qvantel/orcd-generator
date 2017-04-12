@@ -23,5 +23,19 @@
             "trendHour": 23,
             "cdrPerSec": 500
         }
+    ],
+    "countries" : [
+        {
+            "country" : "default",
+            "modifier" : 0
+        },
+        {
+            "country" : "in",
+            "modifier" : 1
+        },
+        {
+            "country" : "za",
+            "modifier" : 1.5
+        }
     ]
 }

@@ -41,5 +41,11 @@
             "trendHour": 23.99,
             "cdrPerSec": 200
         }
+    ],
+    "countries" : [
+        {
+            "country" : "default",
+            "modifier" : 1
+        }
     ]
 }

@@ -1,10 +1,10 @@
 {
     "name" : "SMS Plan Normal",
-    "serviceType": "sms",
-    "campaignId" : null,
-    "startHour" : null,
-    "endHour" : null,
-    "points" : [
+        "serviceType": "sms",
+        "campaignId" : null,
+        "startHour" : null,
+        "endHour" : null,
+        "points" : [
         {
             "trendHour": 4,
             "cdrPerSec": 200
@@ -40,6 +40,12 @@
         {
             "trendHour": 23.99,
             "cdrPerSec": 1500
+        }
+    ],
+    "countries" : [
+        {
+            "country" : "default",
+            "modifier" : 1  
         }
     ]
 }
