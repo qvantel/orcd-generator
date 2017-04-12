@@ -1,16 +1,17 @@
 package se.qvantel.generator
 
 import com.datastax.driver.core.{BatchStatement, SimpleStatement}
+import com.typesafe.scalalogging.LazyLogging
 import kamon.Kamon
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.EDR
 import se.qvantel.generator.utils.property.config.{ApplicationConfig, CassandraConfig}
-import utils.{Logger, LastCdrChecker}
+import utils.LastCdrChecker
 
 import scala.util.{Failure, Success, Try}
 
 object CDRGenerator extends App with SparkConnection
-  with Logger with CassandraConfig with ApplicationConfig {
+  with LazyLogging with CassandraConfig with ApplicationConfig {
   // Start Kamon
   Try(Kamon.start()) match {
     case Success(_) => logger.info("Kamon started sucessfully")
