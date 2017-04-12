@@ -1,17 +1,38 @@
 package se.qvantel.generator
 
 import org.joda.time.{DateTime, DateTimeZone}
-import se.qvantel.generator.model.{EventType, Service, TrafficCase, UnitOfMeasure}
-import se.qvantel.generator.utils.property.config.CallConfig
+import se.qvantel.generator.model._
+import se.qvantel.generator.utils.property.config.ProductConfig
 
 import scala.util.Random
 
-object GenerateData extends CallConfig {
+object GenerateData extends ProductConfig {
 
   private val mccMap = getAvailableMccCodesByCountry()
+  private val isoMccMap = getIsoMccMap()
 
-  private def mcc(): String = {
+  private def mcc(product : Product): String = {
+    // Specify what country will get the mcc.
     val keys = mccMap.keySet.toArray
+    // val isoKeys: Array[String] = isoMccMap.keySet.toArray
+
+    // isoMccMap
+    // ["se" => "1", "it" => "2"]
+    // isoKeys
+    // ["se", "it"]
+
+    // product.countryconfig.
+    // List = list[CountryConfiguration]
+    // list = [ { country: "se", mod: "2"}, {...} ]
+    // val something: Array[String] = product.countryConfiguration.map(p => p.countryIsoName).toArray
+
+    // Something
+    // ["se", "...", ... ]
+
+    // print(isoKeys.union(something))
+    System.exit(1)
+
+
     val randomKey = keys(Random.nextInt(keys.length))
     val mccList = mccMap(randomKey)
     mccList(Random.nextInt(mccList.length)).toString
@@ -21,7 +42,7 @@ object GenerateData extends CallConfig {
 
   private def cell(): String = "FFFFFFFF"
 
-  def destination(): String = mcc() + mnc() + cell()
+  def destination(product : Product): String = mcc(product) + mnc() + cell()
 
   def msisdn(): String = {
     (1 to 10)

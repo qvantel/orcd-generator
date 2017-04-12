@@ -1,11 +1,15 @@
 package se.qvantel.generator.utils.property.config
 
 import java.io.InputStream
+
+import scala.collection.mutable.HashMap
 import org.json4s.{DefaultFormats, _}
 import org.json4s.native.JsonMethods._
 import se.qvantel.generator.model.Country
 
-trait CallConfig extends ApplicationConfig {
+import scala.collection.immutable.Iterable
+
+trait ProductConfig extends ApplicationConfig {
   val countriesFile = config.getString("gen.countries.file")
   val roamingChance = config.getString("gen.roaming.change").toDouble
 
@@ -43,6 +47,24 @@ trait CallConfig extends ApplicationConfig {
         .distinct
         .toArray
     ).toMap
+  }
+
+  def getIsoMccMap(): Map[String, String] = {
+    // Open a source file
+    val source : InputStream = getClass.getResourceAsStream(countriesFile)
+    val lines = scala.io.Source.fromInputStream( source ).mkString
+
+    // For json4s, specify parse format
+    implicit val format = DefaultFormats
+
+    // Parse the contents, extract to a list of countries
+    val countriesList = parse(lines).extract[List[Country]]
+
+    // Close source file
+    source.close()
+
+    // Map mcc code to iso
+    countriesList.groupBy(_.iso).map(_._2.head).map(c => (c.iso, c.mcc)).toMap[String, String]
   }
 }
 

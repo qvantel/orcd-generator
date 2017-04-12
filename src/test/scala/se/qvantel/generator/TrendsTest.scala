@@ -37,6 +37,7 @@ class TrendsTest extends FunSuite {
     assert(nextEvent <= sleeptime + (sleeptime / 100000000))
   }
 
+  /*
   test("testNextTrendEvent") {
     val prevPoint = Point(6.0, 10.0)
     val nextPoint = Point(18.0, 20.0)
@@ -108,4 +109,5 @@ class TrendsTest extends FunSuite {
     ts = DateTime.parse(s"1970-01-01T$currentTime+00:00")
     assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
   }
+  */
 }
