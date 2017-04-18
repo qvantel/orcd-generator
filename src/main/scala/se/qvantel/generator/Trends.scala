@@ -1,7 +1,6 @@
 package se.qvantel.generator
 
 import java.io.File
-
 import com.typesafe.scalalogging.LazyLogging
 import de.ummels.prioritymap.PriorityMap
 import org.joda.time.DateTime
@@ -9,10 +8,8 @@ import org.json4s.native.JsonMethods._
 import org.json4s.DefaultFormats
 import se.qvantel.generator.model.product.{Point, Product}
 import se.qvantel.generator.utils.property.config.ApplicationConfig
-
 import scala.collection.mutable
 import scala.io.Source
-
 
 object Trends extends ApplicationConfig with LazyLogging {
   private def parseTrendFromFile(filename: String) : Product = {
