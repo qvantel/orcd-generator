@@ -1,9 +1,10 @@
 package se.qvantel.generator.utils
 
+import com.typesafe.scalalogging.LazyLogging
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.CDRGenerator._
 
-object LastCdrChecker {
+object LastCdrChecker extends LazyLogging {
   def getStartTime(): DateTime = {
     val backInTimeTs = DateTime.now(DateTimeZone.UTC).minusHours(backInTimeHours)
     // If sudden crash, look into the last inserted record and begin generating from that timestamp
