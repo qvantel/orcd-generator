@@ -7,11 +7,10 @@ import org.json4s.DefaultFormats
 import scala.collection.mutable
 import scala.io.Source
 import org.joda.time.DateTime
+import com.typesafe.scalalogging.LazyLogging
+import model.product.Product
 
-import se.qvantel.generator.utils.Logger
-import se.qvantel.generator.model.product.Product
-
-object Products extends Logger {
+object Products extends LazyLogging {
   private def parseTrendFromFile(filename: String) : Product = {
     // Open file
     val source = Source.fromFile(filename)

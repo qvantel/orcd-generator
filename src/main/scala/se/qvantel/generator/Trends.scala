@@ -2,12 +2,10 @@ package se.qvantel.generator
 
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.product.{Product, Point}
-import se.qvantel.generator.utils.Logger
+import com.typesafe.scalalogging.LazyLogging
 import se.qvantel.generator.utils.property.config.ApplicationConfig
 
-
-object Trends extends ApplicationConfig with Logger {
-
+object Trends extends ApplicationConfig with LazyLogging {
   /**
    *   From a list of points and an hour, return the points prior and after the hour specified
    */
