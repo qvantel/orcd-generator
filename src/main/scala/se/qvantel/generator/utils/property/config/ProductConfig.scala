@@ -54,13 +54,16 @@ trait ProductConfig extends ApplicationConfig {
     implicit val format = DefaultFormats
 
     // Parse the contents, extract to a list of countries
-    val countriesList = parse(lines).extract[List[Country]]
+    val countriesList = parse(lines.toString()).extract[List[Country]].filter(_.iso != "n/a")
 
     // Close source file
     source.close()
 
-    // Map mcc code to iso
-    countriesList.groupBy(_.iso).map(_._2.head).map(c => (c.iso, c.mcc)).toMap[String, String]
+    // Take the Country.iso and make it's own list with only the distinct values
+    countriesList.groupBy(_.country_code)
+      .map(_._2.head)
+      .map(c => c.iso -> c.mcc)
+      .toMap
   }
 }
 

@@ -1,7 +1,7 @@
 package se.qvantel.generator
 
 import org.scalatest.FunSuite
-import se.qvantel.generator.model.product.{Product, Point}
+import se.qvantel.generator.model.product.{CountryConfiguration, Point, Product}
 import org.joda.time.{DateTime, DateTimeZone}
 
 class TrendsTest extends FunSuite {
@@ -48,7 +48,7 @@ class TrendsTest extends FunSuite {
     val p7 = Point(21, 1000.0)
     val p8 = Point(22, 0.0)
     val points = List(p1, p2, p3, p4, p5, p6, p7, p8)
-    val product = Product("a", "b", "c", points)
+    val product = Product("a", "b", "c", points, 1, List.empty[CountryConfiguration])
 
     var currentTime = "9:00:00"
     var tsUs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
