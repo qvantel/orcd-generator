@@ -23,7 +23,8 @@ object GenerateData extends ProductConfig {
 
     // Create productList[CountryIsoName, modifier]
     val productCountries = product.countries
-      .map(c => (c.country, c.modifier)).toMap
+      .map(c => (c.country, c.modifier))
+      .toMap
 
     // For every value in the iso list, check if modifier exists in product countries, else give defaultmodifier
     val maps = iso.map { i =>
@@ -44,7 +45,8 @@ object GenerateData extends ProductConfig {
     // create a List
     val b = maps
       .filter(_.modifier > 0)
-      .map(a => (a.modifier, a.country)).toList
+      .map(a => (a.modifier, a.country))
+      .toList
 
     // send List(modifier, iso) and get random
     val selectedIso = RandomUtils.weightedRandom(b)
