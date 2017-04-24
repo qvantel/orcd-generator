@@ -40,7 +40,6 @@ object EDR {
   private def generateVoiceRecord(product : Product): String = {
     // Call specific generation variables
     val trafficCase = GenerateData.trafficCase()
-    val eventType = GenerateData.eventType()
     val bPartyNumber = GenerateData.msisdn()
     val bpnDestination = GenerateData.destination(product)
     val bpn_location_number = ""
@@ -51,7 +50,7 @@ object EDR {
     s"VALUES (uuid(), $timestamp, $timestamp, $clustering_key, " + // id, created_at, started_at, clustering_key
     s"{amount:$amount, unit_of_measure:'$unitOfMeasure', currency: '$currency'}, " + // used_service_units
     s"'$service'," + // service
-    s"{traffic_case: '$trafficCase', event_type: '$eventType', a_party_number: '$aPartyNumber', " + //event_details
+    s"{traffic_case: '$trafficCase', event_type: '$service', a_party_number: '$aPartyNumber', " + //event_details
     s"b_party_number: '$bPartyNumber', is_roaming: $isRoaming, a_party_location: {" + // event_details
     s"destination: '$apnDestination', location_number: '$apn_location_number', " + //a_party_location
     s"location_area_identification: '$apn_location_area_identification', " +

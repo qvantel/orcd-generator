@@ -1,10 +1,10 @@
 package se.qvantel.generator
 
 import org.joda.time.{DateTime, DateTimeZone}
-import se.qvantel.generator.model._
 import se.qvantel.generator.utils.property.config.ProductConfig
 import model.product.{CountryConfiguration, Product}
 import se.qvantel.generator.utils.RandomUtils
+import se.qvantel.generator.model.{Service, TrafficCase, UnitOfMeasure}
 
 import scala.util.Random
 
@@ -70,8 +70,6 @@ object GenerateData extends ProductConfig {
   def timeStamp(): DateTime = DateTime.now(DateTimeZone.UTC)
 
   def timeStamp(days: Int): DateTime = DateTime.now(DateTimeZone.UTC).minusMinutes(days)
-
-  def eventType(): String = EventType(Random.nextInt(EventType.maxId)).toString
 
   def trafficCase(): String = TrafficCase(Random.nextInt(TrafficCase.maxId)).toString
 

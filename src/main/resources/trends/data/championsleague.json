@@ -4,8 +4,12 @@
     "campaignId" : "2",
     "points" : [
         {
-            "trendHour": 20.99,
-            "cdrPerSec": 1
+            "trendHour": 0.5,
+            "cdrPerSec": 0
+        },
+        {
+            "trendHour": 20.5,
+            "cdrPerSec": 0
         },
         {
             "trendHour": 21,
@@ -22,10 +26,6 @@
         {
             "trendHour": 23.5,
             "cdrPerSec": 150
-        },
-        {
-            "trendHour": 24,
-            "cdrPerSec": 1
         }
     ],
     "defaultModifier" : 1,
