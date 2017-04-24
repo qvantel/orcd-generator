@@ -4,4 +4,5 @@ case class Product(name: String,
                    serviceType: String,
                    campaignId: String,
                    points : List[Point],
-                   countryConfiguration :  List[CountryConfiguration])
+                   defaultModifier : Int,
+                   countries :  List[CountryConfiguration])

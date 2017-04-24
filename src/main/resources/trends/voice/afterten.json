@@ -24,11 +24,8 @@
             "cdrPerSec": 500
         }
     ],
+    "defaultModifier" : 1,
     "countries" : [
-        {
-            "country" : "default",
-            "modifier" : 0
-        },
         {
             "country" : "in",
             "modifier" : 1

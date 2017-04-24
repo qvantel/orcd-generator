@@ -23,7 +23,7 @@ object Trends extends ApplicationConfig with LazyLogging {
     implicit val format = DefaultFormats
 
     // Parse the contents, extract to a list of plans
-    val plan = parse(lines.toString()).extract[Product]
+    val plan = parse(lines.toString).extract[Product]
 
     // Close source file
     source.close()

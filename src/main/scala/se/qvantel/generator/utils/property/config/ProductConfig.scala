@@ -1,13 +1,9 @@
 package se.qvantel.generator.utils.property.config
 
 import java.io.InputStream
-
-import scala.collection.mutable.HashMap
 import org.json4s.{DefaultFormats, _}
 import org.json4s.native.JsonMethods._
 import se.qvantel.generator.model.Country
-
-import scala.collection.immutable.Iterable
 
 trait ProductConfig extends ApplicationConfig {
   val countriesFile = config.getString("gen.countries.file")
@@ -19,14 +15,14 @@ trait ProductConfig extends ApplicationConfig {
     * It will then parse the JSON into the model.Country model, with the properties as described.
     * @return List[Int]
     */
-  def getAvailableMccCodesByCountry(): Map[String, Array[Int]] = {
+  def getAvailableMccCodesByCountry: Map[String, Array[Int]] = {
     // Open a source file
     val res = config.getString("gen.countries.file")
 
     // Open a resource from the res variable. We use a resource since it can be a jar-context.
     val source : InputStream = getClass.getResourceAsStream(res)
 
-    // Finally, read the actuals contents into a string.
+    // Finally, read the actual contents into a string.
     val lines = scala.io.Source.fromInputStream( source ).mkString
 
     // For json4s, specify parse format
@@ -49,7 +45,7 @@ trait ProductConfig extends ApplicationConfig {
     ).toMap
   }
 
-  def getIsoMccMap(): Map[String, String] = {
+  def getIsoMccMap: Map[String, String] = {
     // Open a source file
     val source : InputStream = getClass.getResourceAsStream(countriesFile)
     val lines = scala.io.Source.fromInputStream( source ).mkString

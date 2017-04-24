@@ -3,39 +3,54 @@ package se.qvantel.generator
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model._
 import se.qvantel.generator.utils.property.config.ProductConfig
+import model.product.{CountryConfiguration, Product}
+import se.qvantel.generator.utils.RandomUtils
 
 import scala.util.Random
 
 object GenerateData extends ProductConfig {
 
-  private val mccMap = getAvailableMccCodesByCountry()
-  private val isoMccMap = getIsoMccMap()
+  private val mccMap = getAvailableMccCodesByCountry
+  private val isoMccMap = getIsoMccMap
 
   private def mcc(product : Product): String = {
     // Specify what country will get the mcc.
-    val keys = mccMap.keySet.toArray
-    // val isoKeys: Array[String] = isoMccMap.keySet.toArray
 
-    // isoMccMap
-    // ["se" => "1", "it" => "2"]
-    // isoKeys
-    // ["se", "it"]
-
-    // product.countryconfig.
-    // List = list[CountryConfiguration]
-    // list = [ { country: "se", mod: "2"}, {...} ]
-    // val something: Array[String] = product.countryConfiguration.map(p => p.countryIsoName).toArray
-
-    // Something
-    // ["se", "...", ... ]
-
-    // print(isoKeys.union(something))
-    System.exit(1)
+    // create key array of Tuple[iso, mcc]
+    val keys: Map[String, String] = isoMccMap
+    val iso = keys.map(i => i._1)
 
 
-    val randomKey = keys(Random.nextInt(keys.length))
-    val mccList = mccMap(randomKey)
-    mccList(Random.nextInt(mccList.length)).toString
+    // Create productList[CountryIsoName, modifier]
+    val productCountries = product.countries
+      .map(c => (c.country, c.modifier)).toMap
+
+    // For every value in the iso list, check if modifier exists in product countries, else give defaultmodifier
+    val maps = iso.map { i =>
+      CountryConfiguration(i, product.defaultModifier)
+    }.map { m =>
+      if (productCountries.contains(m.country)) {
+        m.copy(country = m.country, modifier = productCountries.get(m.country) match {
+          case Some(mod) => mod
+          case None => 0.0
+        })
+      }
+      else{
+        m
+      }
+    }
+
+    // Remove elements with modifier < 0
+    // create a List
+    val b = maps
+      .filter(_.modifier > 0)
+      .map(a => (a.modifier, a.country)).toList
+
+    // send List(modifier, iso) and get random
+    val selectedIso = RandomUtils.weightedRandom(b)
+
+    // covert iso to mcc and return, should never return 000
+    keys.getOrElse(selectedIso,"000")
   }
 
   private def mnc(): String = "000"

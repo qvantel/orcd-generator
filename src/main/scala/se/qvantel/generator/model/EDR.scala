@@ -2,9 +2,8 @@ package se.qvantel.generator.model
 
 import se.qvantel.generator.model.product.Product
 import se.qvantel.generator.GenerateData
-import se.qvantel.generator.utils.Logger
 
-object EDR extends Logger {
+object EDR {
   def amount: Int = GenerateData.amount()
   def unitOfMeasure: String = GenerateData.unitOfMeasure()
   def isRoaming: Boolean = GenerateData.isRoaming()
@@ -29,7 +28,6 @@ object EDR extends Logger {
 
   def generateRecord(product: Product, tsNanos: Long): String = {
     apnDestination = GenerateData.destination(product)
-    logger.info("The generated mcc was : " + apnDestination)
     service = product.serviceType
     productName = product.name
     timestamp = tsNanos
