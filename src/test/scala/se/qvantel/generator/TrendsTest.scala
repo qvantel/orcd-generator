@@ -6,7 +6,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 
 class TrendsTest extends FunSuite {
 
-  test("testGetPrevNextPoint"){
+  test("test getPrevNextPoint"){
     val prevPoint = Point(6.0, 10.0)
     val nextPoint = Point(18.0, 20.0)
     val points = List(prevPoint, nextPoint)
@@ -38,7 +38,7 @@ class TrendsTest extends FunSuite {
     assert(nextEvent <= sleeptime + 10000 || nextEvent == minCdrPerSec)
   }
 
-  test("testNextTrendEventZeroCDRPerSec") {
+  test("test product with point that has zero CDR per sec") {
     val p1 = Point(2, 0.0)
     val p2 = Point(3, 1000.0)
     val p3 = Point(9, 1000.0)
@@ -103,7 +103,7 @@ class TrendsTest extends FunSuite {
     assert(nextEvent <= sleeptime + 1000)
   }
 
-  test("testNextTrendEvent") {
+  test("test nextTrendEvent") {
     val prevPoint = Point(6.0, 1000.0)
     val nextPoint = Point(18.0, 2000.0)
     val points = List(prevPoint, nextPoint)
