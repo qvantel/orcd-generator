@@ -47,7 +47,7 @@ object Trends extends ApplicationConfig with LazyLogging {
         logger.error("Fraction has an invalid value!")
       }
     }
-    // If sleep is <0 something is wrong, print debug message
+    // If sleep is <=0 something is wrong, print debug message
     if (sleepUs <= 0) {
       logger.error("Sleep is less or equal to 0!")
     }
