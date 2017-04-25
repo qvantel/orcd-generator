@@ -5,6 +5,7 @@ import se.qvantel.generator.model.product.{CountryConfiguration, Point, Product}
 import org.joda.time.{DateTime, DateTimeZone}
 
 class TrendsTest extends FunSuite {
+  val milliToNano = 1000000
 
   test("test getPrevNextPoint"){
     val prevPoint = Point(6.0, 10.0)
@@ -29,11 +30,11 @@ class TrendsTest extends FunSuite {
     assert(Trends.getNextPrevPoints(points, 25) == prevNext)
   }
 
-  def assertNextTrendEvent(currentTime: String, product: Product, tsUs: Long, fraction: Double, prevPoint: Point, nextPoint: Point) {
-    val nextEvent = Trends.nextTrendEventSleep(product, tsUs)
+  def assertNextTrendEvent(currentTime: String, product: Product, tsNs: Long, fraction: Double, prevPoint: Point, nextPoint: Point) {
+    val nextEvent = Trends.nextTrendEventSleep(product, tsNs)
     val cdrPerSec = (nextPoint.cdrPerSec * (1 - fraction)) + (prevPoint.cdrPerSec * fraction)
-    val minCdrPerSec = (1000000 / 0.1).toLong
-    val sleeptime = (1000000.0 / (GenerateData.cdrModifier * cdrPerSec)).toLong
+    val minCdrPerSec = (1000000000.0 / 0.1).toLong
+    val sleeptime = (1000000000.0 / (GenerateData.cdrModifier * cdrPerSec)).toLong
     assert(nextEvent >= sleeptime - 10000 || nextEvent == minCdrPerSec)
     assert(nextEvent <= sleeptime + 10000 || nextEvent == minCdrPerSec)
   }
@@ -51,54 +52,54 @@ class TrendsTest extends FunSuite {
     val product = Product("a", "b", "c", points, 1, List.empty[CountryConfiguration])
 
     var currentTime = "9:00:00"
-    var tsUs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, tsUs, 0, p2, p3)
+    var tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, 0, p2, p3)
 
     currentTime = "11:00:00"
-    tsUs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
     val ps = Trends.getNextPrevPoints(points, 11)
     val pp = ps._1.trendHour
     val pn = ps._2.trendHour
-    var nextEvent = Trends.nextTrendEventSleep(product, tsUs)
-    var sleeptime = 7200000000L
+    var nextEvent = Trends.nextTrendEventSleep(product, tsNs)
+    var sleeptime = 7200000000000L
     assert(nextEvent >= sleeptime - 1000)
     assert(nextEvent <= sleeptime + 1000)
 
     currentTime = "12:00:00"
-    tsUs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    nextEvent = Trends.nextTrendEventSleep(product, tsUs)
-    sleeptime = 3600000000L
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    nextEvent = Trends.nextTrendEventSleep(product, tsNs)
+    sleeptime = 3600000000000L
     assert(nextEvent >= sleeptime - 1000)
     assert(nextEvent <= sleeptime + 1000)
 
     currentTime = "13:00:01"
-    tsUs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, tsUs, 0, p5, p6)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, 0, p5, p6)
 
     currentTime = "14:00:00"
-    tsUs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, tsUs, 0, p6, p7)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, 0, p6, p7)
 
     currentTime = "16:00:00"
-    tsUs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, tsUs, 0, p6, p7)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, 0, p6, p7)
 
     currentTime = "18:00:00"
-    tsUs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, tsUs, 0, p6, p7)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, 0, p6, p7)
 
     currentTime = "20:00:00"
-    tsUs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, tsUs, 0, p6, p7)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, 0, p6, p7)
 
     currentTime = "21:00:00"
-    tsUs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, tsUs, 0, p6, p7)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, 0, p6, p7)
 
     currentTime = "22:00:00"
-    tsUs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    nextEvent = Trends.nextTrendEventSleep(product, tsUs)
-    sleeptime = 14400000000L
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    nextEvent = Trends.nextTrendEventSleep(product, tsNs)
+    sleeptime = 14400000000000L
     assert(nextEvent >= sleeptime - 1000)
     assert(nextEvent <= sleeptime + 1000)
   }
@@ -111,68 +112,68 @@ class TrendsTest extends FunSuite {
     val product = Product("a", "b", "c", points, 1, List.empty[CountryConfiguration])
 
     var currentTime = "00:00:00"
-    var ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
+    var tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
     var fraction = 6.0/12.0
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "01:00:00"
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
     fraction = 7.0/12.0
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "02:00:00"
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
     fraction = 8.0/12.0
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "05:00:00"
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
     fraction = 11.0/12.0
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "06:00:00"
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
     fraction = 12.0/12.0
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "07:00:00"
     fraction = 11.0/12.0
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "10:00:00"
     fraction = 8.0/12.0
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "13:00:00"
     fraction = 5.0/12.0
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "17:00:00"
     fraction = 1.0/12.0
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "18:01:00"
-    fraction = 0.0/12.0
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    fraction = 0.0166/12.0
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "19:00:00"
     fraction = 1.0/12.0
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "23:00:00"
     fraction = 5.0/12.0
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
 
     currentTime = "23:30:00"
     fraction = 5.5/12.0
-    ts = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*1000
-    assertNextTrendEvent(currentTime, product, ts, fraction, prevPoint, nextPoint)
+    tsNs = DateTime.parse(s"1970-01-01T$currentTime+00:00").getMillis*milliToNano
+    assertNextTrendEvent(currentTime, product, tsNs, fraction, prevPoint, nextPoint)
   }
 }

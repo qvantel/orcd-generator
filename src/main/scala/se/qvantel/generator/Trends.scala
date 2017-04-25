@@ -20,18 +20,18 @@ object Trends extends ApplicationConfig with LazyLogging {
   /*
    * Find out how long we should sleep for when the next event by points from unknown product
    */
-  private def getSleepTimeFromPoints(prevNextPoints: (Point, Point), tsUs: Long, hour: Double): Long ={
-    val ts = new DateTime(tsUs / 1000, DateTimeZone.UTC)
+  private def getSleepTimeFromPoints(prevNextPoints: (Point, Point), tsNs: Long, hour: Double): Long ={
+    val ts = new DateTime(tsNs / 1000000, DateTimeZone.UTC)
     val prevPoint = prevNextPoints._1
     val nextPoint = prevNextPoints._2
 
-    var sleepUs : Long = 0
-    if (prevPoint.cdrPerSec <= 0.0 && nextPoint.cdrPerSec <= 0.0) {
+    var sleepNs : Long = 0
+    if (prevPoint.cdrPerSec <= 0.0 && nextPoint.cdrPerSec <= 0.0){
       var nextPointTs = ts.withTimeAtStartOfDay.withMillisOfDay((nextPoint.trendHour*60*60*1000).toInt)
       if (nextPointTs.getMillis <= ts.getMillis) {
         nextPointTs = nextPointTs.plusDays(1)
       }
-      sleepUs = (nextPointTs.getMillis - ts.getMillis)*1000
+      sleepNs = (nextPointTs.getMillis - ts.getMillis)*1000000
     }
     else {
       var fraction = getFractionBetweenPoints(prevPoint.trendHour, nextPoint.trendHour, hour)
@@ -42,30 +42,30 @@ object Trends extends ApplicationConfig with LazyLogging {
         cdrPerSec = 0.1
       }
       // From the cdrPerSec this timestamp, calculate the sleeptime for the next event
-      sleepUs = (1000000.0 / cdrPerSec).toLong
+      sleepNs = (1000000000.0 / cdrPerSec).toLong
       // If fraction is <0 or >1 something is wrong, print debug message
       if (fraction < 0 || fraction > 1) {
         logger.error("Fraction has an invalid value!")
       }
     }
-    // If sleep is <=0 something is wrong, print debug message
-    if (sleepUs <= 0) {
+    // If sleep is <0 something is wrong, print debug message
+    if (sleepNs <= 0) {
       logger.error("Sleep is less or equal to 0!")
     }
-    sleepUs
+    sleepNs
   }
 
   /**
    * Find out how long we should sleep for when the next cdr event in a specific product trend should be generated
    */
-  def nextTrendEventSleep(product: Product, tsUs: Long) : Long = {
+  def nextTrendEventSleep(product: Product, tsNs: Long) : Long = {
     // Get the hour as a double in the timestamp
-    val ts = new DateTime(tsUs / 1000, DateTimeZone.UTC)
+    val ts = new DateTime(tsNs / 1000000, DateTimeZone.UTC)
     val hour = ts.millisOfDay().get().toDouble/60/60/1000
     // Find the previous and next trend points
     val prevNextPoints = getNextPrevPoints(product.points, hour)
     // Calculate sleep until next event
-    val sleep = getSleepTimeFromPoints(prevNextPoints, tsUs, hour)
+    val sleep = getSleepTimeFromPoints(prevNextPoints, tsNs, hour)
     sleep.toLong
   }
 

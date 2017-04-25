@@ -41,17 +41,19 @@ object CDRGenerator extends App with SparkConnection
 
     val nextEntry = products.head
     val product = nextEntry._1
-    val tsUs = nextEntry._2
+    val tsNs = nextEntry._2
 
     // Sleep until next event to be generated
-    val sleeptime = (tsUs / 1000) - DateTime.now(DateTimeZone.UTC).getMillis
+    val now = DateTime.now(DateTimeZone.UTC).getMillis
+    val tsMs = tsNs / 1000000
+    val sleeptime = tsMs - now
     if (sleeptime >= 0) {
       Thread.sleep(sleeptime)
     }
     // Generate and send CDR
     val execBatch = Try {
       // Generate CQL query for EDR
-      val edrQuery = EDR.generateRecord(product, tsUs)
+      val edrQuery = EDR.generateRecord(product, tsNs)
       batch.add(new SimpleStatement(edrQuery))
 
       if (count == maxBatchSize) {
@@ -66,8 +68,8 @@ object CDRGenerator extends App with SparkConnection
 
     if (execBatch.isSuccess) {
       // Calculate next time this type of event should be generated
-      val nextTs = tsUs + Trends.nextTrendEventSleep(product, tsUs)
-      products = products + (product -> nextTs)
+      val nextTs = tsNs + Trends.nextTrendEventSleep(product, tsNs)
+      products = products + (product -> (nextTs + System.nanoTime()%1000))
     }
   }
 
