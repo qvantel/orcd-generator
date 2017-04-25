@@ -5,7 +5,6 @@ import se.qvantel.generator.utils.property.config.ProductConfig
 import model.product.{CountryConfiguration, Product}
 import se.qvantel.generator.utils.RandomUtils
 import se.qvantel.generator.model.{Service, TrafficCase, UnitOfMeasure}
-import scala.collection.immutable.Iterable
 import scala.util.Random
 
 object GenerateData extends ProductConfig {
