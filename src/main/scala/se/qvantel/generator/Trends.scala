@@ -6,6 +6,7 @@ import com.typesafe.scalalogging.LazyLogging
 import se.qvantel.generator.utils.property.config.ApplicationConfig
 
 object Trends extends ApplicationConfig with LazyLogging {
+
   /**
    *   From a list of points and an hour, return the points prior and after the hour specified
    */
@@ -25,7 +26,7 @@ object Trends extends ApplicationConfig with LazyLogging {
     val nextPoint = prevNextPoints._2
 
     var sleepUs : Long = 0
-    if (prevPoint.cdrPerSec <= 0.0 && nextPoint.cdrPerSec <= 0.0){
+    if (prevPoint.cdrPerSec <= 0.0 && nextPoint.cdrPerSec <= 0.0) {
       var nextPointTs = ts.withTimeAtStartOfDay.withMillisOfDay((nextPoint.trendHour*60*60*1000).toInt)
       if (nextPointTs.getMillis <= ts.getMillis) {
         nextPointTs = nextPointTs.plusDays(1)

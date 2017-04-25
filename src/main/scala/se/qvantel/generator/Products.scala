@@ -4,7 +4,6 @@ import java.io.File
 import de.ummels.prioritymap.PriorityMap
 import org.json4s.native.JsonMethods._
 import org.json4s.DefaultFormats
-import scala.collection.mutable
 import scala.io.Source
 import org.joda.time.DateTime
 import com.typesafe.scalalogging.LazyLogging
@@ -38,19 +37,17 @@ object Products extends LazyLogging {
       these ++ f.listFiles.filter(_.isDirectory).flatMap(recursiveListFiles)
     }
 
-    val trendsDirPath = Option(System.getProperty("trends.dir")) match {
-      case Some(path) => path
-      case None => getClass.getClassLoader.getResource("trends").getPath
-    }
+    val trendsDirPath = Option(System.getProperty("trends.dir")).
+      getOrElse(getClass.getClassLoader.getResource("trends").getPath)
 
     logger.info(s"Loading trends from $trendsDirPath")
 
     val files = recursiveListFiles(new File(trendsDirPath))
 
     // Create a priority list out of all products with default timestamp
-    var pmap = mutable.HashMap.empty[Product, Long]
-    files.foreach(f => pmap.put(parseTrendFromFile(f.toString), startTs.getMillis*1000))
-    val pmaplist = pmap.toList
+    val pmap = files
+      .map(f => (parseTrendFromFile(f.toString), startTs.getMillis*1000))
+      .toMap
 
     // Return priority map
     PriorityMap(pmap.toList:_*)

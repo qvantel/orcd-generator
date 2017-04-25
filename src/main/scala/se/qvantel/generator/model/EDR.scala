@@ -8,7 +8,7 @@ object EDR {
   def unitOfMeasure: String = GenerateData.unitOfMeasure()
   def isRoaming: Boolean = GenerateData.isRoaming()
   def aPartyNumber: String = GenerateData.msisdn()
-  def apnDestination: String = GenerateData.destination()
+  var apnDestination = ""
   val clustering_key = 0
   var timestamp : Long = 0
   val apn_location_number = ""
@@ -27,20 +27,21 @@ object EDR {
   val expiry_date = ""
 
   def generateRecord(product: Product, tsNanos: Long): String = {
+    apnDestination = GenerateData.destination(product)
     service = product.serviceType
     productName = product.name
     timestamp = tsNanos
     service match {
-      case "voice" => generateVoiceRecord()
-      case _ => generateDataRecord()
+      case "data" => generateDataRecord()
+      case _ => generateVoiceRecord(product)
     }
   }
 
-  private def generateVoiceRecord(): String = {
+  private def generateVoiceRecord(product : Product): String = {
     // Call specific generation variables
     val trafficCase = GenerateData.trafficCase()
     val bPartyNumber = GenerateData.msisdn()
-    val bpnDestination = GenerateData.destination()
+    val bpnDestination = GenerateData.destination(product)
     val bpn_location_number = ""
     val bpn_location_area_identification = ""
     val bpn_cell_global_identification = ""
