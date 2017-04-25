@@ -11,9 +11,10 @@ trait SparkConnection extends CassandraConfig {
     .set("spark.cassandra.auth.username", username)
     .set("spark.cassandra.auth.password", password)
     .set("spark.cassandra.connection.port", port)
+
   val context = new SparkContext("local[2]", "database", conf)
   // Setup cassandra connector
   val connector = CassandraConnector(conf)
   // Create cassandra session
-  var session = connector.openSession()
+  val session = connector.openSession()
 }

@@ -6,7 +6,6 @@ import kamon.Kamon
 import org.joda.time.{DateTime, DateTimeZone}
 import scala.util.{Failure, Success, Try}
 import model.EDR
-import model.product.Product
 import utils.property.config.{ApplicationConfig, CassandraConfig}
 import utils.LastCdrChecker
 
@@ -65,24 +64,10 @@ object CDRGenerator extends App with SparkConnection
       cdrCounter.increment()
     }
 
-    execBatch match {
-      case Success(_) => {
-        // Calculate next time this type of event should be generated
-        val nextTs = tsUs + Trends.nextTrendEventSleep(product, tsUs)
-        products = products + (product -> nextTs)
-      }
-      case Failure(e) => {
-        // Check if session is open, then close it and try to connect to Cassandra once again
-        if (!session.isClosed) {
-          session.close()
-        }
-
-        Try(session = connector.openSession()) match {
-          case Success(_) => logger.info("Reconnected back to Cassandra")
-          case Failure(e) => logger.info("Could not reconnect to cassandra, will attempt again.")
-        }
-
-      }
+    if (execBatch.isSuccess) {
+      // Calculate next time this type of event should be generated
+      val nextTs = tsUs + Trends.nextTrendEventSleep(product, tsUs)
+      products = products + (product -> nextTs)
     }
   }
 
