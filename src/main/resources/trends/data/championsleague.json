@@ -32,11 +32,11 @@
   "countries" : [
     {
       "country" : "de",
-      "modifier" : 2.2
+      "modifier" : 5
     },
     {
       "country" : "es",
-      "modifier" : 1.9
+      "modifier" : 3
     },
     {
       "country" : "gb",
@@ -44,7 +44,7 @@
     },
     {
       "country" : "br",
-      "modifier" : 1.6
+      "modifier" : 3
     },
     {
       "country" : "it",
