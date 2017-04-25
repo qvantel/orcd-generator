@@ -5,7 +5,7 @@ import se.qvantel.generator.utils.property.config.ProductConfig
 import model.product.{CountryConfiguration, Product}
 import se.qvantel.generator.utils.RandomUtils
 import se.qvantel.generator.model.{Service, TrafficCase, UnitOfMeasure}
-
+import scala.collection.immutable.Iterable
 import scala.util.Random
 
 object GenerateData extends ProductConfig {
@@ -30,14 +30,9 @@ object GenerateData extends ProductConfig {
     val maps = iso.map { i =>
       CountryConfiguration(i, product.defaultModifier)
     }.map { m =>
-      if (productCountries.contains(m.country)) {
-        m.copy(country = m.country, modifier = productCountries.get(m.country) match {
-          case Some(mod) => mod
-          case None => 0.0
-        })
-      }
-      else {
-        m
+      productCountries.contains(m.country) match {
+        case true => m.copy(modifier = productCountries.getOrElse(m.country, 0.0))
+        case false => m
       }
     }
 
