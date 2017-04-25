@@ -1,38 +1,38 @@
 {
-    "name": "Cheap Calls After 22",
-    "serviceType": "voice",
-    "campaignId" : "1",
-    "points" : [
-        {
-            "trendHour": 1,
-            "cdrPerSec": 100
-        },
-        {
-            "trendHour": 2,
-            "cdrPerSec": 0
-        },
-        {
-            "trendHour": 22,
-            "cdrPerSec": 0
-        },
-        {
-            "trendHour": 22.2,
-            "cdrPerSec": 400
-        },
-        {
-            "trendHour": 23,
-            "cdrPerSec": 500
-        }
-    ],
-    "defaultModifier" : 1,
-    "countries" : [
-        {
-            "country" : "in",
-            "modifier" : 1
-        },
-        {
-            "country" : "za",
-            "modifier" : 1.5
-        }
-    ]
+  "name": "Cheap Calls After 22",
+  "serviceType": "voice",
+  "campaignId" : "1",
+  "points" : [
+    {
+      "trendHour": 1,
+      "cdrPerSec": 100
+    },
+    {
+      "trendHour": 2,
+      "cdrPerSec": 0
+    },
+    {
+      "trendHour": 22,
+      "cdrPerSec": 0
+    },
+    {
+      "trendHour": 22.2,
+      "cdrPerSec": 400
+    },
+    {
+      "trendHour": 23,
+      "cdrPerSec": 500
+    }
+  ],
+  "defaultModifier" : 1,
+  "countries" : [
+    {
+      "country" : "in",
+      "modifier" : 1
+    },
+    {
+      "country" : "za",
+      "modifier" : 1.5
+    }
+  ]
 }
