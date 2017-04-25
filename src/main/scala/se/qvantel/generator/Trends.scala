@@ -26,7 +26,7 @@ object Trends extends ApplicationConfig with LazyLogging {
     val nextPoint = prevNextPoints._2
 
     var sleepUs : Long = 0
-    if (prevPoint.cdrPerSec <= 0.0 && nextPoint.cdrPerSec <= 0.0){
+    if (prevPoint.cdrPerSec <= 0.0 && nextPoint.cdrPerSec <= 0.0) {
       var nextPointTs = ts.withTimeAtStartOfDay.withMillisOfDay((nextPoint.trendHour*60*60*1000).toInt)
       if (nextPointTs.getMillis <= ts.getMillis) {
         nextPointTs = nextPointTs.plusDays(1)
@@ -48,7 +48,7 @@ object Trends extends ApplicationConfig with LazyLogging {
         logger.error("Fraction has an invalid value!")
       }
     }
-    // If sleep is <0 something is wrong, print debug message
+    // If sleep is <=0 something is wrong, print debug message
     if (sleepUs <= 0) {
       logger.error("Sleep is less or equal to 0!")
     }

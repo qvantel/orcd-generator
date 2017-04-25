@@ -36,7 +36,7 @@ object GenerateData extends ProductConfig {
           case None => 0.0
         })
       }
-      else{
+      else {
         m
       }
     }
@@ -50,7 +50,6 @@ object GenerateData extends ProductConfig {
 
     // send List(modifier, iso) and get random
     val selectedIso = RandomUtils.weightedRandom(b)
-
 
     // covert iso to mcc and return, should never return 000
     keys.getOrElse(selectedIso,"000")
