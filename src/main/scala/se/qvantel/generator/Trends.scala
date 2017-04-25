@@ -26,7 +26,7 @@ object Trends extends ApplicationConfig with LazyLogging {
     val nextPoint = prevNextPoints._2
 
     var sleepUs : Long = 0
-    if (prevPoint.cdrPerSec <= 0.0 && nextPoint.cdrPerSec <= 0.0){
+    if (prevPoint.cdrPerSec <= 0.0 && nextPoint.cdrPerSec <= 0.0) {
       var nextPointTs = ts.withTimeAtStartOfDay.withMillisOfDay((nextPoint.trendHour*60*60*1000).toInt)
       if (nextPointTs.getMillis <= ts.getMillis) {
         nextPointTs = nextPointTs.plusDays(1)
