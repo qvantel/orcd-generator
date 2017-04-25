@@ -46,7 +46,7 @@ object Products extends LazyLogging {
 
     // Create a priority list out of all products with default timestamp
     val pmap = files
-      .map(f => (parseTrendFromFile(f.toString), startTs.getMillis*1000))
+      .map(f => (parseTrendFromFile(f.toString), startTs.getMillis*1000000))
       .toMap
 
     // Return priority map
