@@ -1,7 +1,7 @@
 package se.qvantel.generator
 
 import org.joda.time.{DateTime, DateTimeZone}
-import se.qvantel.generator.model.{EventType, Service, TrafficCase, UnitOfMeasure}
+import se.qvantel.generator.model.{Service, TrafficCase, UnitOfMeasure}
 import se.qvantel.generator.utils.property.config.CallConfig
 
 import scala.util.Random
@@ -34,8 +34,6 @@ object GenerateData extends CallConfig {
   def timeStamp(): DateTime = DateTime.now(DateTimeZone.UTC)
 
   def timeStamp(days: Int): DateTime = DateTime.now(DateTimeZone.UTC).minusMinutes(days)
-
-  def eventType(): String = EventType(Random.nextInt(EventType.maxId)).toString
 
   def trafficCase(): String = TrafficCase(Random.nextInt(TrafficCase.maxId)).toString
 

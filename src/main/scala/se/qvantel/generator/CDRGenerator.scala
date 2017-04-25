@@ -4,11 +4,11 @@ import com.datastax.driver.core.{BatchStatement, SimpleStatement}
 import com.typesafe.scalalogging.LazyLogging
 import kamon.Kamon
 import org.joda.time.{DateTime, DateTimeZone}
-import se.qvantel.generator.model.EDR
-import se.qvantel.generator.utils.property.config.{ApplicationConfig, CassandraConfig}
-import utils.LastCdrChecker
-
 import scala.util.{Failure, Success, Try}
+import model.EDR
+import model.product.Product
+import utils.property.config.{ApplicationConfig, CassandraConfig}
+import utils.LastCdrChecker
 
 object CDRGenerator extends App with SparkConnection
   with LazyLogging with CassandraConfig with ApplicationConfig {
@@ -35,26 +35,24 @@ object CDRGenerator extends App with SparkConnection
   val startTs = LastCdrChecker.getStartTime()
   logger.info(s"Start ts: $startTs")
 
-  var products = Trends.readTrendsFromFile(startTs)
+  var products = Products.readTrendsFromFile(startTs)
   logger.info(products.toString)
 
   while (totalBatches < nrOfMaximumBatches || nrOfMaximumBatches == -1) {
 
     val nextEntry = products.head
     val product = nextEntry._1
-    val ts = new DateTime(nextEntry._2, DateTimeZone.UTC)
+    val tsUs = nextEntry._2
 
     // Sleep until next event to be generated
-    val sleeptime = ts.getMillis - DateTime.now(DateTimeZone.UTC).getMillis
+    val sleeptime = (tsUs / 1000) - DateTime.now(DateTimeZone.UTC).getMillis
     if (sleeptime >= 0) {
       Thread.sleep(sleeptime)
     }
     // Generate and send CDR
     val execBatch = Try {
-      // Convert epoch timestamp from milli seconds to micro seconds
-      val tsNanos = ts.getMillis*1000 + (System.nanoTime()%1000)
       // Generate CQL query for EDR
-      val edrQuery = EDR.generateRecord(product, tsNanos)
+      val edrQuery = EDR.generateRecord(product, tsUs)
       batch.add(new SimpleStatement(edrQuery))
 
       if (count == maxBatchSize) {
@@ -70,7 +68,7 @@ object CDRGenerator extends App with SparkConnection
     execBatch match {
       case Success(_) => {
         // Calculate next time this type of event should be generated
-        val nextTs = ts.getMillis + Trends.nextTrendEventSleep(product, ts)
+        val nextTs = tsUs + Trends.nextTrendEventSleep(product, tsUs)
         products = products + (product -> nextTs)
       }
       case Failure(e) => {
@@ -94,4 +92,3 @@ object CDRGenerator extends App with SparkConnection
   Kamon.shutdown()
   logger.info("Closing program")
 }
-
