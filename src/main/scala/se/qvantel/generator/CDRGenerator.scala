@@ -47,9 +47,6 @@ object CDRGenerator extends App with SparkConnection
     val now = DateTime.now(DateTimeZone.UTC).getMillis
     val tsMs = tsNs / 1000000
     val sleeptime = tsMs - now
-
-    println(s"Now: ${now.toString}. Sleep time: ${sleeptime} Ts: ${tsMs}")
-    println(s"eh: ${new DateTime(tsMs, DateTimeZone.UTC).toString()}")
     if (sleeptime >= 0) {
       Thread.sleep(sleeptime)
     }
