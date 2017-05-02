@@ -2,6 +2,11 @@
 
 # QvantelCDRGenerator
 
+Run CDRGenerator:
+```
+$ sbt run
+```
+
 Run just tests:
 ```
 $ sbt test
