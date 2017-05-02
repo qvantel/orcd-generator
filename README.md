@@ -38,7 +38,7 @@ Then there are different folders where each folder represents a service.
 
 ### Changing trend settings
 
-A trend is represented by a json file. There are 3 main parts to the json file, the name for the trend, the service type used (mms, sms, data, voice) and a list of points. Each point is representing a value of how many cdrs should be generated at a certain point in time.
+A trend is represented by a json file. There are three main parts to the json file, the name for the trend, the service type used (mms, sms, data, voice) and a list of points. Each point is representing a value of how many cdrs should be generated at a certain point in time.
 
 ### Changing Country settingst
 
