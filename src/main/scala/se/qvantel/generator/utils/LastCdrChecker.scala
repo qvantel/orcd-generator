@@ -18,8 +18,8 @@ object LastCdrChecker extends LazyLogging {
     // This is done in case for example the CDR Generator crashes or is shut down it will continue where it stopped
     val startTs = !rows.isEmpty match {
       case true => {
-        val tsUs = rows.get(0).getLong("created_at")
-        val lastEventTs = new DateTime(tsUs / 1000, DateTimeZone.UTC)
+        val tsNs = rows.get(0).getLong("created_at")
+        val lastEventTs = new DateTime(tsNs / 1000000, DateTimeZone.UTC)
         logger.info(s"BackInTimeTs: $backInTimeTs")
         logger.info(s"LastEventTs: $lastEventTs")
         lastEventTs.getMillis > backInTimeTs.getMillis match {
