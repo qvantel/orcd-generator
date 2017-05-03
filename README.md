@@ -42,6 +42,6 @@ A trend is represented by a json file. There are three main parts to the json fi
 
 ### Changing Country settings
 
-The trend file has a list of countries represented by an array, each item with the iso and modifier value for that country.
+The trend file has a list of countries represented by an array where each item contains an iso and a modifier value for that country.
 
-The trend file also has a default modifier, this represents the value that all the countries that are not in the countires list will get. So if the trend should be country specific, set this to 0.
+The trend file also has a default modifier, this represents the value that all the countries that are not specified in the countires list will get. So if the trend should be country specific, set this to 0.
