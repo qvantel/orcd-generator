@@ -1,31 +1,54 @@
 {
-    "name": "Champions League Final",
-    "serviceType": "data",
-    "campaignId" : "2",
-    "points" : [
-        {
-            "trendHour": 20.99,
-            "cdrPerSec": 1
-        },
-        {
-            "trendHour": 21,
-            "cdrPerSec": 500
-        },
-        {
-            "trendHour": 22,
-            "cdrPerSec": 700
-        },
-        {
-            "trendHour": 23,
-            "cdrPerSec": 700
-        },
-        {
-            "trendHour": 23.5,
-            "cdrPerSec": 150
-        },
-        {
-            "trendHour": 24,
-            "cdrPerSec": 1
-        }
-    ]
+  "name": "Champions League Final",
+  "serviceType": "data",
+  "campaignId" : "2",
+  "points" : [
+    {
+      "trendHour": 0.5,
+      "cdrPerSec": 0
+    },
+    {
+      "trendHour": 20.5,
+      "cdrPerSec": 0
+    },
+    {
+      "trendHour": 21,
+      "cdrPerSec": 500
+    },
+    {
+      "trendHour": 22,
+      "cdrPerSec": 700
+    },
+    {
+      "trendHour": 23,
+      "cdrPerSec": 700
+    },
+    {
+      "trendHour": 23.5,
+      "cdrPerSec": 150
+    }
+  ],
+  "defaultModifier" : 1,
+  "countries" : [
+    {
+      "country" : "de",
+      "modifier" : 5
+    },
+    {
+      "country" : "es",
+      "modifier" : 3
+    },
+    {
+      "country" : "gb",
+      "modifier" : 1.7
+    },
+    {
+      "country" : "br",
+      "modifier" : 3
+    },
+    {
+      "country" : "it",
+      "modifier" : 2
+    }
+  ]
 }

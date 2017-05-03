@@ -1,21 +1,19 @@
 package se.qvantel.generator
 
 import java.io.File
-
-import de.ummels.prioritymap.PriorityMap
-import org.joda.time.DateTime
 import org.json4s.native.JsonMethods._
 import org.json4s.DefaultFormats
-import se.qvantel.generator.model.product.{Point, Product}
-import se.qvantel.generator.utils.Logger
-import se.qvantel.generator.utils.property.config.ApplicationConfig
-
 import scala.collection.mutable
 import scala.io.Source
+import org.joda.time.{DateTime, DateTimeZone}
+import se.qvantel.generator.model.product.{Product, Point}
+import com.typesafe.scalalogging.LazyLogging
+import se.qvantel.generator.utils.property.config.ApplicationConfig
+import de.ummels.prioritymap.PriorityMap
 import scala.util.Random
 
-
-object Trends extends ApplicationConfig with Logger {
+object Trends extends ApplicationConfig with LazyLogging {
+  //>>>>>>> origin/master
   private def parseTrendFromFile(filename: String) : Product = {
     // Open file
     val source = Source.fromFile(filename)
@@ -55,56 +53,70 @@ object Trends extends ApplicationConfig with Logger {
     // Create a priority list out of all products with default timestamp
     var pmap = mutable.HashMap.empty[Product, Long]
 
-    val temp = files.map( f => (parseTrendFromFile(f.toString), startTs.getMillis)).toMap
+    val temp = files.map(f => (parseTrendFromFile(f.toString), startTs.getMillis)).toMap
 
     // Return priority map
-    PriorityMap(temp.toList:_*)
+    PriorityMap(temp.toList: _*)
   }
-
   /**
    *   From a list of points and an hour, return the points prior and after the hour specified
    */
   def getNextPrevPoints(points: List[Point], hour: Double): (Point, Point) = {
-    points.reverse.dropWhile(p => p.trendHour >= hour).headOption match {
-      case Some(tailPoint) => (tailPoint, points.find(p => p.trendHour >= hour).getOrElse(points(0)))
-      case None => (points(points.length - 1), points(0))
+    points.reverse.dropWhile(p => p.trendHour > hour).headOption match {
+      case Some(tailPoint) => (tailPoint, points.find(p => p.trendHour > hour).getOrElse(points.head))
+      case None => (points.last, points.head)
     }
+  }
+
+  /*
+   * Find out how long we should sleep for when the next event by points from unknown product
+   */
+  private def getSleepTimeFromPoints(prevNextPoints: (Point, Point), tsNs: Long, hour: Double): Long ={
+    val ts = new DateTime(tsNs / 1000000, DateTimeZone.UTC)
+    val prevPoint = prevNextPoints._1
+    val nextPoint = prevNextPoints._2
+
+    var sleepNs : Long = 0
+    if (prevPoint.cdrPerSec <= 0.0 && nextPoint.cdrPerSec <= 0.0){
+      var nextPointTs = ts.withTimeAtStartOfDay.withMillisOfDay((nextPoint.trendHour*60*60*1000).toInt)
+      if (nextPointTs.getMillis <= ts.getMillis) {
+        nextPointTs = nextPointTs.plusDays(1)
+      }
+      sleepNs = (nextPointTs.getMillis - ts.getMillis)*1000000
+    }
+    else {
+      var fraction = getFractionBetweenPoints(prevPoint.trendHour, nextPoint.trendHour, hour)
+      // Using the fraction and the prev/next points cdr/sec, calculate the cdr/sec at this specific timestamp
+      var cdrPerSec = GenerateData.cdrModifier * ((prevPoint.cdrPerSec*(1-fraction)) + (nextPoint.cdrPerSec*fraction))
+      // Make sure that cdrPerSec is not extremely low so it doesn't sleep forever
+      if (cdrPerSec <= 0.1){
+        cdrPerSec = 0.1
+      }
+      // From the cdrPerSec this timestamp, calculate the sleeptime for the next event
+      sleepNs = (1000000000.0 / cdrPerSec).toLong
+      // If fraction is <0 or >1 something is wrong, print debug message
+      if (fraction < 0 || fraction > 1) {
+        logger.error("Fraction has an invalid value!")
+      }
+    }
+    // If sleep is <0 something is wrong, print debug message
+    if (sleepNs <= 0) {
+      logger.error("Sleep is less or equal to 0!")
+    }
+    sleepNs
   }
 
   /**
    * Find out how long we should sleep for when the next cdr event in a specific product trend should be generated
    */
-  def nextTrendEventSleep(trend: Product, ts: DateTime) : Long = {
+  def nextTrendEventSleep(product: Product, tsNs: Long) : Long = {
     // Get the hour as a double in the timestamp
-    val hour = ts.minuteOfDay().get().toDouble/60
+    val ts = new DateTime(tsNs / 1000000, DateTimeZone.UTC)
+    val hour = ts.millisOfDay().get().toDouble/60/60/1000
     // Find the previous and next trend points
-    val prevNextPoints = getNextPrevPoints(trend.points, hour)
-    val prevPoint = prevNextPoints._1
-    val nextPoint = prevNextPoints._2
-
-    val fraction = getFractionBetweenPoints(prevPoint.trendHour, nextPoint.trendHour, hour)
-    // Using the fraction and the prev/next points cdr/sec, calculate the cdr/sec at this specific timestamp
-    val cdrPerSec = (prevPoint.cdrPerSec*(1-fraction)) + (nextPoint.cdrPerSec*fraction)
-    // From the cdrPerSec this timestamp, calculate the sleeptime for the next event
-    val sleep = (1000/GenerateData.cdrModifier)/cdrPerSec
-
-    var printError = false
-    // If fraction is <0 or >1 something is wrong, print debug message
-    if (fraction < 0 || fraction > 1) {
-      logger.error("Fraction has an invalid value!")
-      printError = true
-    }
-    // If sleep is <0 something is wrong, print debug message
-    else if (sleep < 0) {
-      logger.error("Sleep is less than 0!")
-      printError = true
-    }
-    if (printError) {
-      val hourPrev = prevPoint.trendHour
-      val hourNext = nextPoint.trendHour
-      logger.error(s"\tHour: $hour = $hourPrev -> $hourNext")
-      logger.error(s"\tSleep: $sleep")
-    }
+    val prevNextPoints = getNextPrevPoints(product.points, hour)
+    // Calculate sleep until next event
+    val sleep = getSleepTimeFromPoints(prevNextPoints, tsNs, hour)
     sleep.toLong
   }
 

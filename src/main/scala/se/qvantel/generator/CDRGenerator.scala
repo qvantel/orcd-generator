@@ -1,16 +1,27 @@
 package se.qvantel.generator
 
 import com.datastax.driver.core.{BatchStatement, SimpleStatement}
-import de.ummels.prioritymap.PriorityMap
+import com.typesafe.scalalogging.LazyLogging
+import kamon.Kamon
 import org.joda.time.{DateTime, DateTimeZone}
-import se.qvantel.generator.model.EDR
-import se.qvantel.generator.utils.property.config.{ApplicationConfig, CassandraConfig}
-import utils.Logger
-
 import scala.util.{Failure, Success, Try}
+import model.EDR
+import utils.property.config.{ApplicationConfig, CassandraConfig}
+import utils.LastCdrChecker
 
 object CDRGenerator extends App with SparkConnection
-  with Logger with CassandraConfig with ApplicationConfig {
+  with LazyLogging with CassandraConfig with ApplicationConfig {
+  // Start Kamon
+  Try(Kamon.start()) match {
+    case Success(_) => logger.info("Kamon started sucessfully")
+    case Failure(e) => {
+      e.printStackTrace()
+      System.exit(0)
+    }
+  }
+  // Kamon metrics
+  val cdrCounter = Kamon.metrics.counter("cdrs-generated")
+
   // Prepare batch
   val batch = new BatchStatement()
   var count = 1
@@ -20,37 +31,10 @@ object CDRGenerator extends App with SparkConnection
   logger.info("Config: Nr of maximum batches: " + nrOfMaximumBatches)
   logger.info("Config: batch element size: " + maxBatchSize)
 
-  def getStartTime(): DateTime = {
-    val backInTimeTs = DateTime.now(DateTimeZone.UTC).minusHours(backInTimeHours)
-    // If sudden crash, look into the last inserted record and begin generating from that timestamp
-    val rows = session.execute(
-      s"SELECT created_at FROM $keyspace.$cdrTable " +
-      "WHERE clustering_key=0 ORDER BY created_at DESC LIMIT 1")
-      .all()
-
-    // By default set startTs to backInTimeTs
-    // If events exists in cassandra and last event is newer than backInTimeTs, start at lastEventTs
-    // This is done in case for example the CDR Generator crashes or is shut down it will continue where it stopped
-    val startTs = !rows.isEmpty match {
-      case true => {
-        val tsUs = rows.get(0).getLong("created_at")
-        val lastEventTs = new DateTime(tsUs / 1000, DateTimeZone.UTC)
-        logger.info(s"BackInTimeTs: $backInTimeTs")
-        logger.info(s"LastEventTs: $lastEventTs")
-        lastEventTs.getMillis > backInTimeTs.getMillis match {
-          case true => lastEventTs
-          case false => backInTimeTs
-        }
-      }
-      case false => backInTimeTs
-    }
-    startTs
-  }
-
-  val startTs = getStartTime()
+  val startTs = LastCdrChecker.getStartTime()
   logger.info(s"Start ts: $startTs")
 
-  var products = Trends.readTrendsFromFile(startTs)
+  var products = Products.readTrendsFromFile(startTs)
   logger.info(products.toString)
 
   var newDay = new DateTime(products.head._2, DateTimeZone.UTC).getDayOfWeek
@@ -66,20 +50,20 @@ object CDRGenerator extends App with SparkConnection
 
     val nextEntry = products.head
     val product = nextEntry._1
-    val ts = new DateTime(nextEntry._2, DateTimeZone.UTC)
+    val tsNs = nextEntry._2
 
 
     // Sleep until next event to be generated
-    val sleeptime = ts.getMillis - DateTime.now(DateTimeZone.UTC).getMillis
+    val now = DateTime.now(DateTimeZone.UTC).getMillis
+    val tsMs = tsNs / 1000000
+    val sleeptime = tsMs - now
     if (sleeptime >= 0) {
       Thread.sleep(sleeptime)
     }
     // Generate and send CDR
     val execBatch = Try {
-      // Convert epoch timestamp from milli seconds to micro seconds
-      val tsNanos = ts.getMillis*1000 + (System.nanoTime()%1000)
       // Generate CQL query for EDR
-      val edrQuery = EDR.generateRecord(product, tsNanos)
+      val edrQuery = EDR.generateRecord(product, tsNs)
       batch.add(new SimpleStatement(edrQuery))
 
       if (count == maxBatchSize) {
@@ -89,32 +73,19 @@ object CDRGenerator extends App with SparkConnection
         totalBatches += 1
       }
       count += 1
+      cdrCounter.increment()
     }
 
-    execBatch match {
-      case Success(_) => {
-        // Calculate next time this type of event should be generated
-        val nextTs = ts.getMillis + Trends.nextTrendEventSleep(product, ts)
-        products = products + (product -> nextTs)
-      }
-      case Failure(e) => {
-        // Check if session is open, then close it and try to connect to Cassandra once again
-        if (!session.isClosed) {
-          session.close()
-        }
-
-        Try(session = connector.openSession()) match {
-          case Success(_) => logger.info("Reconnected back to Cassandra")
-          case Failure(e) => logger.info("Could not reconnect to cassandra, will attempt again.")
-        }
-
-      }
+    if (execBatch.isSuccess) {
+      // Calculate next time this type of event should be generated
+      val nextTs = tsNs + Trends.nextTrendEventSleep(product, tsNs)
+      products = products + (product -> (nextTs + System.nanoTime()%1000))
     }
   }
 
   logger.info("Closing connection")
-  // Close cassandra session
+  // Close kamon and cassandra session
   session.close()
+  Kamon.shutdown()
   logger.info("Closing program")
 }
-

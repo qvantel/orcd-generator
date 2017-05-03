@@ -8,7 +8,7 @@ object EDR {
   def unitOfMeasure: String = GenerateData.unitOfMeasure()
   def isRoaming: Boolean = GenerateData.isRoaming()
   def aPartyNumber: String = GenerateData.msisdn()
-  def apnDestination: String = GenerateData.destination()
+  var apnDestination = ""
   val clustering_key = 0
   var timestamp : Long = 0
   val apn_location_number = ""
@@ -27,21 +27,21 @@ object EDR {
   val expiry_date = ""
 
   def generateRecord(product: Product, tsNanos: Long): String = {
+    apnDestination = GenerateData.destination(product)
     service = product.serviceType
     productName = product.name
     timestamp = tsNanos
     service match {
-      case "voice" => generateVoiceRecord()
-      case _ => generateDataRecord()
+      case "data" => generateDataRecord()
+      case _ => generateVoiceRecord(product)
     }
   }
 
-  private def generateVoiceRecord(): String = {
+  private def generateVoiceRecord(product : Product): String = {
     // Call specific generation variables
     val trafficCase = GenerateData.trafficCase()
-    val eventType = GenerateData.eventType()
     val bPartyNumber = GenerateData.msisdn()
-    val bpnDestination = GenerateData.destination()
+    val bpnDestination = GenerateData.destination(product)
     val bpn_location_number = ""
     val bpn_location_area_identification = ""
     val bpn_cell_global_identification = ""
@@ -50,7 +50,7 @@ object EDR {
     s"VALUES (uuid(), $timestamp, $timestamp, $clustering_key, " + // id, created_at, started_at, clustering_key
     s"{amount:$amount, unit_of_measure:'$unitOfMeasure', currency: '$currency'}, " + // used_service_units
     s"'$service'," + // service
-    s"{traffic_case: '$trafficCase', event_type: '$eventType', a_party_number: '$aPartyNumber', " + //event_details
+    s"{traffic_case: '$trafficCase', event_type: '$service', a_party_number: '$aPartyNumber', " + //event_details
     s"b_party_number: '$bPartyNumber', is_roaming: $isRoaming, a_party_location: {" + // event_details
     s"destination: '$apnDestination', location_number: '$apn_location_number', " + //a_party_location
     s"location_area_identification: '$apn_location_area_identification', " +

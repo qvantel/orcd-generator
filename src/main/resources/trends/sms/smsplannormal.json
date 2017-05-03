@@ -1,45 +1,56 @@
 {
-    "name" : "SMS Plan Normal",
-    "serviceType": "sms",
-    "campaignId" : null,
-    "startHour" : null,
-    "endHour" : null,
-    "points" : [
-        {
-            "trendHour": 4,
-            "cdrPerSec": 200
-        },
-        {
-            "trendHour": 8,
-            "cdrPerSec": 800
-        },
-        {
-            "trendHour": 9,
-            "cdrPerSec": 1200
-        },
-        {
-            "trendHour": 12,
-            "cdrPerSec": 2000
-        },
-        {
-            "trendHour": 16,
-            "cdrPerSec": 2500
-        },
-        {
-            "trendHour": 18,
-            "cdrPerSec": 3000
-        },
-        {
-            "trendHour": 20,
-            "cdrPerSec": 4000
-        },
-        {
-            "trendHour": 23,
-            "cdrPerSec": 2300
-        },
-        {
-            "trendHour": 23.99,
-            "cdrPerSec": 1500
-        }
-    ]
+  "name" : "SMS Plan Normal",
+  "serviceType": "sms",
+  "campaignId" : null,
+  "startHour" : null,
+  "endHour" : null,
+  "points" : [
+    {
+      "trendHour": 4,
+      "cdrPerSec": 200
+    },
+    {
+      "trendHour": 8,
+      "cdrPerSec": 800
+    },
+    {
+      "trendHour": 9,
+      "cdrPerSec": 1200
+    },
+    {
+      "trendHour": 12,
+      "cdrPerSec": 2000
+    },
+    {
+      "trendHour": 16,
+      "cdrPerSec": 2500
+    },
+    {
+      "trendHour": 18,
+      "cdrPerSec": 3000
+    },
+    {
+      "trendHour": 20,
+      "cdrPerSec": 4000
+    },
+    {
+      "trendHour": 23,
+      "cdrPerSec": 2300
+    },
+    {
+      "trendHour": 23.99,
+      "cdrPerSec": 1500
+    }
+  ],
+  "defaultModifier" : 1,
+  "countries" : [
+    {
+      "country": "se",
+      "modifier": 0.7
+    },
+    {
+      "country": "dk",
+      "modifier": 2
+    }
+  ]
 }

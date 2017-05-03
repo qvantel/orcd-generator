@@ -1,45 +1,48 @@
 {
-    "name" : "MMS Plan Normal",
-    "serviceType": "mms",
-    "campaignId" : null,
-    "startHour" : null,
-    "endHour" : null,
-    "points" : [
-        {
-            "trendHour": 4,
-            "cdrPerSec": 50
-        },
-        {
-            "trendHour": 8,
-            "cdrPerSec": 200
-        },
-        {
-            "trendHour": 9,
-            "cdrPerSec": 300
-        },
-        {
-            "trendHour": 12,
-            "cdrPerSec": 700
-        },
-        {
-            "trendHour": 16,
-            "cdrPerSec": 1000
-        },
-        {
-            "trendHour": 18,
-            "cdrPerSec": 900
-        },
-        {
-            "trendHour": 20,
-            "cdrPerSec": 600
-        },
-        {
-            "trendHour": 23,
-            "cdrPerSec": 400
-        },
-        {
-            "trendHour": 23.99,
-            "cdrPerSec": 200
-        }
-    ]
+  "name" : "MMS Plan Normal",
+  "serviceType": "mms",
+  "campaignId" : null,
+  "startHour" : null,
+  "endHour" : null,
+  "points" : [
+    {
+      "trendHour": 4,
+      "cdrPerSec": 50
+    },
+    {
+      "trendHour": 8,
+      "cdrPerSec": 200
+    },
+    {
+      "trendHour": 9,
+      "cdrPerSec": 300
+    },
+    {
+      "trendHour": 12,
+      "cdrPerSec": 700
+    },
+    {
+      "trendHour": 16,
+      "cdrPerSec": 1000
+    },
+    {
+      "trendHour": 18,
+      "cdrPerSec": 900
+    },
+    {
+      "trendHour": 20,
+      "cdrPerSec": 600
+    },
+    {
+      "trendHour": 23,
+      "cdrPerSec": 400
+    },
+    {
+      "trendHour": 23.99,
+      "cdrPerSec": 200
+    }
+  ],
+  "defaultModifier" : 1,
+  "countries" : [
+  ]
 }

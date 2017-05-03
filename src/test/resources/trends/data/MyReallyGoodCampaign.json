@@ -19,5 +19,7 @@
             "trendHour": 22,
             "cdrPerSec": 700
         }
-    ]
+    ],
+    "defaultModifier" : 1,
+    "countries" : []
 }
