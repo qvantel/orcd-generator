@@ -54,13 +54,11 @@ object Trends extends ApplicationConfig with Logger {
 
     // Create a priority list out of all products with default timestamp
     var pmap = mutable.HashMap.empty[Product, Long]
-    files.foreach(f => pmap.put(parseTrendFromFile(f.toString), startTs.getMillis))
 
-    // Modify the points increase/decrease 10 percent
-    pmap.foreach(prod => prod._1.points.foreach(p => p.copy(trendHour = p.trendHour, cdrPerSec = (Random.nextFloat()*0.2-0.1 + p.cdrPerSec))))
+    val temp = files.map( f => (parseTrendFromFile(f.toString), startTs.getMillis)).toMap
 
     // Return priority map
-    PriorityMap(pmap.toList:_*)
+    PriorityMap(temp.toList:_*)
   }
 
   /**
@@ -123,5 +121,13 @@ object Trends extends ApplicationConfig with Logger {
     }
 
     hourDiffLow/hourDiffHigh
+  }
+
+  def changeTrends(maptemp: PriorityMap[Product, Long]) : PriorityMap[Product, Long] = {
+    val e = maptemp.map(p => (p._1.copy(points = p._1.points.map(point => point.copy(
+      cdrPerSec = (((Random.nextFloat()*0.2) + (-0.1))*point.cdrPerSec) + point.cdrPerSec))), p._2))
+
+    // Return priority map
+    PriorityMap(e.toList:_*)
   }
 }

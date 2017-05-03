@@ -1,10 +1,12 @@
 package se.qvantel.generator
 
 import com.datastax.driver.core.{BatchStatement, SimpleStatement}
+import de.ummels.prioritymap.PriorityMap
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.EDR
 import se.qvantel.generator.utils.property.config.{ApplicationConfig, CassandraConfig}
 import utils.Logger
+
 import scala.util.{Failure, Success, Try}
 
 object CDRGenerator extends App with SparkConnection
@@ -51,11 +53,21 @@ object CDRGenerator extends App with SparkConnection
   var products = Trends.readTrendsFromFile(startTs)
   logger.info(products.toString)
 
+  var newDay = new DateTime(products.head._2, DateTimeZone.UTC).getDayOfWeek
+
   while (totalBatches < nrOfMaximumBatches || nrOfMaximumBatches == -1) {
+
+    val timeCheck = new DateTime(products.head._2, DateTimeZone.UTC).getDayOfWeek
+    if (timeCheck == newDay) {
+      newDay = timeCheck + 1
+      if (newDay == 8) {newDay = (newDay % 7)}
+      products = Trends.changeTrends(products)
+    }
 
     val nextEntry = products.head
     val product = nextEntry._1
     val ts = new DateTime(nextEntry._2, DateTimeZone.UTC)
+
 
     // Sleep until next event to be generated
     val sleeptime = ts.getMillis - DateTime.now(DateTimeZone.UTC).getMillis
