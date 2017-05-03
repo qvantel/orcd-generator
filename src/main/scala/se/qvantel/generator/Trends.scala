@@ -13,7 +13,6 @@ import de.ummels.prioritymap.PriorityMap
 import scala.util.Random
 
 object Trends extends ApplicationConfig with LazyLogging {
-  //>>>>>>> origin/master
   private def parseTrendFromFile(filename: String) : Product = {
     // Open file
     val source = Source.fromFile(filename)
