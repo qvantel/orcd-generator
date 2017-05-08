@@ -1,10 +1,5 @@
 package se.qvantel.generator
 
-import java.io.File
-import org.json4s.native.JsonMethods._
-import org.json4s.DefaultFormats
-import scala.collection.mutable
-import scala.io.Source
 import org.joda.time.{DateTime, DateTimeZone}
 import se.qvantel.generator.model.product.{Product, Point}
 import com.typesafe.scalalogging.LazyLogging
@@ -89,7 +84,7 @@ object Trends extends ApplicationConfig with LazyLogging {
     hourDiffLow/hourDiffHigh
   }
 
-  def changeTrends(maptemp: PriorityMap[Product, Long]) : PriorityMap[Product, Long] = {
+  def randomizeTrends(maptemp: PriorityMap[Product, Long]) : PriorityMap[Product, Long] = {
     val newMap = maptemp.map(
       p => (p._1.copy(
         points = p._1.points.map(

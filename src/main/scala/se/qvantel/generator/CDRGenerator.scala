@@ -52,7 +52,7 @@ object CDRGenerator extends App with SparkConnection
     if (currentDay == nextDay) {
       nextDay = currentDay + 1
       if (nextDay == 8) {nextDay = (nextDay % 7)}
-      products = Trends.changeTrends(products)
+      products = Trends.randomizeTrends(products)
     }
 
     // Sleep until next event to be generated
