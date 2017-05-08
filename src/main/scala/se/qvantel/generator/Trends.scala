@@ -10,7 +10,7 @@ object Trends extends ApplicationConfig with LazyLogging {
   /**
    *   From a list of points and an hour, return the points prior and after the hour specified
    */
-  def getNextPrevPoints(points: List[Point], hour: Double): (Point, Point) = {
+  def getPrevNextPoints(points: List[Point], hour: Double): (Point, Point) = {
     points.reverse.dropWhile(p => p.trendHour > hour).headOption match {
       case Some(tailPoint) => (tailPoint, points.find(p => p.trendHour > hour).getOrElse(points.head))
       case None => (points.last, points.head)
@@ -63,7 +63,7 @@ object Trends extends ApplicationConfig with LazyLogging {
     val ts = new DateTime(tsNs / 1000000, DateTimeZone.UTC)
     val hour = ts.millisOfDay().get().toDouble/60/60/1000
     // Find the previous and next trend points
-    val prevNextPoints = getNextPrevPoints(product.points, hour)
+    val prevNextPoints = getPrevNextPoints(product.points, hour)
     // Calculate sleep until next event
     val sleep = getSleepTimeFromPoints(prevNextPoints, tsNs, hour)
     sleep.toLong

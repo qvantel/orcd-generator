@@ -34,6 +34,9 @@ object CDRGenerator extends App with SparkConnection
   val startTs = LastCdrChecker.getStartTime()
   logger.info(s"Start ts: $startTs")
 
+  var lastTsNs = 0L
+  var seed = 0L
+
   var products = Products.readTrendsFromFile(startTs)
   logger.info(products.toString)
 
@@ -42,6 +45,15 @@ object CDRGenerator extends App with SparkConnection
     val nextEntry = products.head
     val product = nextEntry._1
     val tsNs = nextEntry._2
+
+    if (lastTsNs != tsNs){
+      lastTsNs = tsNs
+      seed = -1
+    }
+    seed += 1
+    if (seed > 999){
+      logger.error("More than 1000cdr/nanosecond, cassandra collisions will occur!!!")
+    }
 
     // Sleep until next event to be generated
     val now = DateTime.now(DateTimeZone.UTC).getMillis
@@ -53,7 +65,7 @@ object CDRGenerator extends App with SparkConnection
     // Generate and send CDR
     val execBatch = Try {
       // Generate CQL query for EDR
-      val edrQuery = EDR.generateRecord(product, tsNs)
+      val edrQuery = EDR.generateRecord(product, tsNs + seed)
       batch.add(new SimpleStatement(edrQuery))
 
       if (count == maxBatchSize) {
@@ -69,7 +81,7 @@ object CDRGenerator extends App with SparkConnection
     if (execBatch.isSuccess) {
       // Calculate next time this type of event should be generated
       val nextTs = tsNs + Trends.nextTrendEventSleep(product, tsNs)
-      products = products + (product -> (nextTs + System.nanoTime()%1000))
+      products = products + (product -> (nextTs + seed))
     }
   }
 
