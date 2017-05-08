@@ -34,7 +34,7 @@ object CDRGenerator extends App with SparkConnection
   val startTs = LastCdrChecker.getStartTime()
   logger.info(s"Start ts: $startTs")
 
-  // A incrementing seed for every 1ns to avoid primary key collisions in cassandra
+  // An incrementing seed for every 1ns to avoid primary key collisions in cassandra
   var lastTsNs = 0L
   var seed = 0L
 
