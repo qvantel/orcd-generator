@@ -37,21 +37,23 @@ object CDRGenerator extends App with SparkConnection
   var products = Products.readTrendsFromFile(startTs)
   logger.info(products.toString)
 
-  var newDay = new DateTime(products.head._2, DateTimeZone.UTC).getDayOfWeek
+  // Save the day of the week. 1 represents Mondays, 2 Tuesdays and so on until 7 for Sundays.
+  var nextDay = new DateTime(products.head._2 / 1000000, DateTimeZone.UTC).getDayOfWeek
 
   while (totalBatches < nrOfMaximumBatches || nrOfMaximumBatches == -1) {
-
-    val timeCheck = new DateTime(products.head._2, DateTimeZone.UTC).getDayOfWeek
-    if (timeCheck == newDay) {
-      newDay = timeCheck + 1
-      if (newDay == 8) {newDay = (newDay % 7)}
-      products = Trends.changeTrends(products)
-    }
-
     val nextEntry = products.head
     val product = nextEntry._1
     val tsNs = nextEntry._2
 
+    // Save the current day.
+    val currentDay = new DateTime(tsNs / 1000000, DateTimeZone.UTC).getDayOfWeek
+
+    // If new day, set nextDay to the next day. If next day is equal to 8 then set it to 1 (Monday). Change the trends.
+    if (currentDay == nextDay) {
+      nextDay = currentDay + 1
+      if (nextDay == 8) {nextDay = (nextDay % 7)}
+      products = Trends.changeTrends(products)
+    }
 
     // Sleep until next event to be generated
     val now = DateTime.now(DateTimeZone.UTC).getMillis

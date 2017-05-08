@@ -13,50 +13,6 @@ import de.ummels.prioritymap.PriorityMap
 import scala.util.Random
 
 object Trends extends ApplicationConfig with LazyLogging {
-  private def parseTrendFromFile(filename: String) : Product = {
-    // Open file
-    val source = Source.fromFile(filename)
-
-    // Finally, read the actuals contents into a string.
-    val lines = source.mkString
-
-    // For json4s, specify parse format
-    implicit val format = DefaultFormats
-
-    // Parse the contents, extract to a list of plans
-    val plan = parse(lines.toString()).extract[Product]
-
-    // Close source file
-    source.close()
-
-    // Return the gathered plan
-    plan
-  }
-
-  def readTrendsFromFile(startTs: DateTime) : PriorityMap[Product, Long] = {
-    // List all config files in resources/trends
-    def recursiveListFiles(f: File): Array[File] = {
-      val these = f.listFiles.filter(_.isFile)
-      these ++ f.listFiles.filter(_.isDirectory).flatMap(recursiveListFiles)
-    }
-
-    val trendsDirPath = Option(System.getProperty("trends.dir")) match {
-      case Some(path) => path
-      case None => getClass.getClassLoader.getResource("trends").getPath
-    }
-
-    logger.info(s"Loading trends from $trendsDirPath")
-
-    val files = recursiveListFiles(new File(trendsDirPath))
-
-    // Create a priority list out of all products with default timestamp
-    var pmap = mutable.HashMap.empty[Product, Long]
-
-    val temp = files.map(f => (parseTrendFromFile(f.toString), startTs.getMillis)).toMap
-
-    // Return priority map
-    PriorityMap(temp.toList: _*)
-  }
   /**
    *   From a list of points and an hour, return the points prior and after the hour specified
    */
@@ -130,15 +86,16 @@ object Trends extends ApplicationConfig with LazyLogging {
         (currentHour - prevHour, 24 - prevHour + nextHour)
       }
     }
-
     hourDiffLow/hourDiffHigh
   }
 
   def changeTrends(maptemp: PriorityMap[Product, Long]) : PriorityMap[Product, Long] = {
-    val e = maptemp.map(p => (p._1.copy(points = p._1.points.map(point => point.copy(
-      cdrPerSec = (((Random.nextFloat()*0.2) + (-0.1))*point.cdrPerSec) + point.cdrPerSec))), p._2))
-
+    val newMap = maptemp.map(
+      p => (p._1.copy(
+        points = p._1.points.map(
+          point => point.copy(
+            cdrPerSec = (((Random.nextFloat()*0.2) + (-0.1))*point.cdrPerSec) + point.cdrPerSec))), p._2))
     // Return priority map
-    PriorityMap(e.toList:_*)
+    PriorityMap(newMap.toList:_*)
   }
 }
