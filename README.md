@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/flygare/QvantelCDRGenerator.svg?token=B6YLB31LLNNKsSzKXpCe&branch=master)](https://travis-ci.com/flygare/QvantelCDRGenerator)
+[![Build Status](https://travis-ci.org/flygare/orcd-generator.svg?branch=master)](https://travis-ci.org/flygare/orcd-generator)
 [![codecov](https://codecov.io/gh/flygare/orcd-generator/branch/master/graph/badge.svg)](https://codecov.io/gh/flygare/orcd-generator)
 
 # QvantelCDRGenerator
