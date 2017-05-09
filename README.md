@@ -3,7 +3,7 @@
 # QvantelCDRGenerator
 
 ## Description
-This service is used to generate fake CDRs(Call Data Record) to Cassandra using Spark. The generator also sends performance metrics to graphite through kamon(statsD).
+This program is used to generate fake CDRs(Call Data Records) to Cassandra using Spark. The generator also sends performance metrics to graphite through kamon(statsD).
 The service can be modified to meet specific requirements such as country specific trends and change what products should be generated.
 
 ## Usage
@@ -38,7 +38,7 @@ You can find the application config in
 ```
 $ src/main/resources/application.conf
 ```
-You can change things as the Cassandra IP, amount of CDRs generated and how far back in time the generator should generate data for. 
+You can change settings such as the Cassandra IP, amount of CDRs generated and how far back in time the generator should generate data for. 
 
 ## Changing trends
 
