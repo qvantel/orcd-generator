@@ -33,6 +33,13 @@ $ ./cdr_perf_test.sh
 ```
 Use -s 60 for 60 seconds intervals, -g to report to graphite and -l 30 to loop every 30s
 
+## Changing configuration
+You can find the application config in
+```
+$ src/main/resources/application.conf
+```
+You can change things as amount of CDRs generated and how far back in time the generator should generate data for. 
+
 ## Changing trends
 
 You can find the trend settings under
