@@ -1,10 +1,10 @@
 [![Build Status](https://travis-ci.org/flygare/orcd-generator.svg?branch=master)](https://travis-ci.org/flygare/orcd-generator)
 [![codecov](https://codecov.io/gh/flygare/orcd-generator/branch/master/graph/badge.svg)](https://codecov.io/gh/flygare/orcd-generator)
 
-# QvantelCDRGenerator
+# Generator
 
 ## Description
-This program is used to generate fake CDRs(Call Data Records) to Cassandra using Spark. The generator also sends performance metrics to graphite through kamon(statsD).
+This service is used to generate fake CDRs(Call Data Records) to Cassandra using Spark. The generator also sends performance metrics to graphite through kamon(statsD).
 The service can be modified to meet specific requirements such as country specific trends and change what products should be generated.
 
 ## Usage
