@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/flygare/QvantelCDRGenerator.svg?token=B6YLB31LLNNKsSzKXpCe&branch=master)](https://travis-ci.com/flygare/QvantelCDRGenerator)
+[![codecov](https://codecov.io/gh/flygare/orcd-generator/branch/master/graph/badge.svg)](https://codecov.io/gh/flygare/orcd-generator)
 
 # QvantelCDRGenerator
 
@@ -57,3 +58,4 @@ A trend is represented by a json file. There are three main parts to the json fi
 The trend file has a list of countries represented by an array where each item contains an iso and a modifier value for that country.
 
 The trend file also has a default modifier, this represents the value that all the countries that are not specified in the countires list will get. So if the trend should be country specific, set this to 0.
+
