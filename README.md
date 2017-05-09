@@ -3,8 +3,8 @@
 # QvantelCDRGenerator
 
 ## Description
-This service is used to generate fake CDRs(Call Data Records) usage to Cassandra using Spark, it is sending performance data to graphite. 
-The service can be modified to meet specific requirements such as country specific trends and change what products are being generated.
+This service is used to generate fake CDRs(Call Data Record) to Cassandra using Spark. The generator also sends performance metrics to graphite through kamon(statsD).
+The service can be modified to meet specific requirements such as country specific trends and change what products should be generated.
 
 ## Usage
 Run CDRGenerator:
