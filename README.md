@@ -38,7 +38,7 @@ You can find the application config in
 ```
 $ src/main/resources/application.conf
 ```
-You can change things as amount of CDRs generated and how far back in time the generator should generate data for. 
+You can change things as the Cassandra IP, amount of CDRs generated and how far back in time the generator should generate data for. 
 
 ## Changing trends
 
