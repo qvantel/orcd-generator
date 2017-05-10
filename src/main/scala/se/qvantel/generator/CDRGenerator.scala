@@ -41,11 +41,8 @@ object CDRGenerator extends App with SparkConnection
   var products = Products.readTrendsFromFile(startTs)
   logger.info(products.toString)
 
-  // Save the day of the week. 1 represents Mondays, 2 Tuesdays and so on until 7 for Sundays.
-  var nextDay = new DateTime(products.head._2 / 1000000, DateTimeZone.UTC).getDayOfWeek + 1
-  if (nextDay == 8) {
-    nextDay = (nextDay % 7)
-  }
+  // Save the nextDay of the week. 1 represents Mondays, 2 Tuesdays and so on until 7 for Sundays.
+  var nextDay = (new DateTime(products.head._2 / 1000000, DateTimeZone.UTC).getDayOfWeek % 7) + 1
 
   while (totalBatches < nrOfMaximumBatches || nrOfMaximumBatches == -1) {
     val nextEntry = products.head
@@ -57,12 +54,9 @@ object CDRGenerator extends App with SparkConnection
 
     // If new day, set nextDay to the next day. If next day is equal to 8 then set it to 1 (Monday). Change the trends.
     if (currentDay == nextDay) {
-      nextDay = currentDay + 1
-      if (nextDay == 8) {
-        nextDay = (nextDay % 7)
-      }
-        products = Trends.randomizeTrends(products)
-        logger.info(products.toString())
+      nextDay = (currentDay  % 7) + 1
+      products = Trends.randomizeTrends(products)
+      logger.info(products.toString())
     }
 
     // Reset seed for next ns timestamp
