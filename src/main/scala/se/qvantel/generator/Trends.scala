@@ -85,11 +85,12 @@ object Trends extends ApplicationConfig with LazyLogging {
   }
 
   def randomizeTrends(maptemp: PriorityMap[Product, Long]) : PriorityMap[Product, Long] = {
+    val maxRandomPercentage = 0.1
     val newMap = maptemp.map(
       p => (p._1.copy(
-        points = p._1.points.map(
+        points = List(p._1.points.head) ::: p._1.points.drop(1).dropRight(1).map(
           point => point.copy(
-            cdrPerSec = (((Random.nextFloat()*0.2) + (-0.1))*point.cdrPerSec) + point.cdrPerSec))), p._2))
+            cdrPerSec = ((Random.nextFloat*(2*maxRandomPercentage)) + maxRandomPercentage + 0.9) * point.cdrPerSec)) ::: List(p._1.points.last)), p._2))
     // Return priority map
     PriorityMap(newMap.toList:_*)
   }

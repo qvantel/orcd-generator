@@ -42,7 +42,10 @@ object CDRGenerator extends App with SparkConnection
   logger.info(products.toString)
 
   // Save the day of the week. 1 represents Mondays, 2 Tuesdays and so on until 7 for Sundays.
-  var nextDay = new DateTime(products.head._2 / 1000000, DateTimeZone.UTC).getDayOfWeek
+  var nextDay = new DateTime(products.head._2 / 1000000, DateTimeZone.UTC).getDayOfWeek + 1
+  if (nextDay == 8) {
+    nextDay = (nextDay % 7)
+  }
 
   while (totalBatches < nrOfMaximumBatches || nrOfMaximumBatches == -1) {
     val nextEntry = products.head
@@ -58,48 +61,49 @@ object CDRGenerator extends App with SparkConnection
       if (nextDay == 8) {
         nextDay = (nextDay % 7)
       }
-      products = Trends.randomizeTrends(products)
-      }
-
-      // Reset seed for next ns timestamp
-      if (lastTsNs != tsNs) {
-        lastTsNs = tsNs
-        seed = -1
-      }
-      seed += 1
-      if (seed > 999) {
-        logger.error("More than 1000cdr/nanosecond, cassandra collisions will occur!!!")
-      }
-
-      // Sleep until next event to be generated
-      val now = DateTime.now(DateTimeZone.UTC).getMillis
-      val tsMs = tsNs / 1000000
-      val sleeptime = tsMs - now
-      if (sleeptime >= 0) {
-        Thread.sleep(sleeptime)
-      }
-      // Generate and send CDR
-      val execBatch = Try {
-        // Generate CQL query for EDR
-        val edrQuery = EDR.generateRecord(product, tsNs + seed)
-        batch.add(new SimpleStatement(edrQuery))
-
-        if (count == maxBatchSize) {
-          session.execute(batch)
-          batch.clear()
-          count = 0
-          totalBatches += 1
-        }
-        count += 1
-        cdrCounter.increment()
-      }
-
-      if (execBatch.isSuccess) {
-        // Calculate next time this type of event should be generated
-        val nextTs = tsNs + Trends.nextTrendEventSleep(product, tsNs)
-        products = products + (product -> (nextTs + seed))
-      }
+        products = Trends.randomizeTrends(products)
+        logger.info(products.toString())
     }
+
+    // Reset seed for next ns timestamp
+    if (lastTsNs != tsNs) {
+      lastTsNs = tsNs
+      seed = -1
+    }
+    seed += 1
+    if (seed > 999) {
+      logger.error("More than 1000cdr/nanosecond, cassandra collisions will occur!!!")
+    }
+
+    // Sleep until next event to be generated
+    val now = DateTime.now(DateTimeZone.UTC).getMillis
+    val tsMs = tsNs / 1000000
+    val sleeptime = tsMs - now
+    if (sleeptime >= 0) {
+      Thread.sleep(sleeptime)
+    }
+    // Generate and send CDR
+    val execBatch = Try {
+      // Generate CQL query for EDR
+      val edrQuery = EDR.generateRecord(product, tsNs + seed)
+      batch.add(new SimpleStatement(edrQuery))
+
+      if (count == maxBatchSize) {
+        session.execute(batch)
+        batch.clear()
+        count = 0
+        totalBatches += 1
+      }
+      count += 1
+      cdrCounter.increment()
+    }
+
+    if (execBatch.isSuccess) {
+      // Calculate next time this type of event should be generated
+      val nextTs = tsNs + Trends.nextTrendEventSleep(product, tsNs)
+      products = products + (product -> (nextTs + seed))
+    }
+  }
 
     logger.info("Closing connection")
     // Close kamon and cassandra session
