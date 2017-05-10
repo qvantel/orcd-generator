@@ -13,6 +13,7 @@ script:
  - sbt -jvm-opts travis/jvmopts.test test
  - sbt -jvm-opts travis/jvmopts.test scalastyle
  - sbt -jvm-opts travis/jvmopts.assembly assembly
+ - sbt clean coverage test coverageReport
 
 cache:
   directories:
@@ -21,6 +22,7 @@ cache:
     - $HOME/.m2/repository
 
 after_success:
+  - bash <(curl -s https://codecov.io/bash)
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
   - test $TRAVIS_BRANCH = "master" && ./trigger_core_repo_build.sh

@@ -1,7 +1,13 @@
-[![Build Status](https://travis-ci.com/flygare/QvantelCDRGenerator.svg?token=B6YLB31LLNNKsSzKXpCe&branch=master)](https://travis-ci.com/flygare/QvantelCDRGenerator)
+[![Build Status](https://travis-ci.org/flygare/orcd-generator.svg?branch=master)](https://travis-ci.org/flygare/orcd-generator)
+[![codecov](https://codecov.io/gh/flygare/orcd-generator/branch/master/graph/badge.svg)](https://codecov.io/gh/flygare/orcd-generator)
 
-# QvantelCDRGenerator
+# Generator
 
+## Description
+This service is used to generate fake CDRs(Call Data Records) to Cassandra using Spark. The generator also sends performance metrics to graphite through kamon(statsD).
+The service can be modified to meet specific requirements such as country specific trends and change what products should be generated.
+
+## Usage
 Run CDRGenerator:
 ```
 $ sbt run
@@ -28,6 +34,13 @@ $ ./cdr_perf_test.sh
 ```
 Use -s 60 for 60 seconds intervals, -g to report to graphite and -l 30 to loop every 30s
 
+## Changing configuration
+You can find the application config in
+```
+$ src/main/resources/application.conf
+```
+You can change settings such as the Cassandra IP, amount of CDRs generated and how far back in time the generator should generate data for. 
+
 ## Changing trends
 
 You can find the trend settings under
@@ -45,3 +58,4 @@ A trend is represented by a json file. There are three main parts to the json fi
 The trend file has a list of countries represented by an array where each item contains an iso and a modifier value for that country.
 
 The trend file also has a default modifier, this represents the value that all the countries that are not specified in the countires list will get. So if the trend should be country specific, set this to 0.
+
