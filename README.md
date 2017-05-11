@@ -4,7 +4,7 @@
 # Generator
 
 ## Description
-This service is used to generate fake CDRs(Call Data Records) to Cassandra using Spark. The generator also sends performance metrics to graphite through kamon(statsD).
+This service is used to generate fake CDRs(Call Data Records) to Cassandra using Spark. The generator also sends performance metrics to Graphite through Kamon(statsD).
 The service can be modified to meet specific requirements such as country specific trends and change what products should be generated.
 
 ## Usage
