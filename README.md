@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/flygare/orcd-generator.svg?branch=master)](https://travis-ci.org/flygare/orcd-generator)
-[![codecov](https://codecov.io/gh/flygare/orcd-generator/branch/master/graph/badge.svg)](https://codecov.io/gh/flygare/orcd-generator)
+[![Build Status](https://travis-ci.org/qvantel/orcd-generator.svg?branch=master)](https://travis-ci.org/qvantel/orcd-generator)
+[![codecov](https://codecov.io/gh/qvantel/orcd-generator/branch/master/graph/badge.svg)](https://codecov.io/gh/qvantel/orcd-generator)
 
 # Generator
 
